@@ -1,0 +1,23 @@
+﻿MÁQUINA 1: DIAGNÓSTICO DE REDE E BLOQUEIO (tudo manual, sem depender da rede)
+
+Copie esta pasta inteira para um pendrive. Na Máquina 1, entre como CRJ-Admin
+(ou digite a senha dele quando o Windows pedir "Sim").
+
+1) DIAGNOSTICAR-REDE.cmd
+   Mostra a placa, o driver, as configurações e os erros. Faz 100 pings no roteador,
+   no estúdio e na internet e diz se o problema é a PORTA do roteador ou a PLACA.
+   Não muda nada. No final pergunta se você quer TENTAR CORRIGIR pelo driver
+   (fixa 100 Mbps e desliga a economia de energia da placa) e testa de novo.
+   O relatório fica salvo nesta pasta (diagnostico-rede-....txt). Traga para eu ver.
+
+   Dica: rode uma vez na porta atual. Depois troque para uma porta do roteador
+   que funciona com outra máquina e rode de novo. Comparar as duas resolve a dúvida.
+
+2) BLOQUEAR.cmd
+   Coloca a tela "MÁQUINA COM DEFEITO": aviso na tela de bloqueio e antes do login,
+   contas dos alunos desativadas e todo mundo desconectado em 20 segundos.
+
+3) LIBERAR.cmd
+   Desfaz o bloqueio (ou use "Liberar máquina" no painel).
+
+Os scripts servem para qualquer máquina da sala.

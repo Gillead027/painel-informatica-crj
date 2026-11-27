@@ -1,0 +1,30 @@
+# ---- segredos (NUNCA subir) ----
+chaves/
+painel/config.json
+*.cred
+*.pem
+
+# ---- dados dos alunos e da sala (privacidade) ----
+painel/historico.db
+painel/hist_raw/
+painel/telas/
+painel/apresentacao/
+relatorios/
+computadores.csv
+pendrive-maquinas/resultado.txt
+maquina-1-bloqueio/diagnostico-rede-*.txt
+kit-design-painel/*.png
+
+# ---- registros, temporários e cópias antigas ----
+*.log
+painel/tmp/
+__pycache__/
+backup/
+painel/painel-antes-*.py
+painel/painel-acoes-antes-*.ps1
+painel/index-v*.html
+painel/apresentacao-v1.html
+
+# ---- instaladores binários (Veyon, driver da impressora) ----
+instaladores/*
+!instaladores/instalar-impressora-brother.ps1

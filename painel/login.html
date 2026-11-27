@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-tema="escuro">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Entrar · Painel da Informática</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%23f2b705'/%3E%3Cpath d='M6 7h12v8H6z M9 18h6' stroke='%2317191b' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root { --bg:#08090a; --surface:#0f1011; --elev:#161718; --line:#23252a; --line-strong:#383b3f; --ink:#eeeff1; --muted:#8a8f98; --faint:#62666d; --amarelo:#f2b705; --crit:#f07068; --ease:cubic-bezier(.2,0,0,1); --spring:cubic-bezier(.34,1.56,.64,1); color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: var(--bg); color: var(--ink); font: 400 14px/1.5 "Inter", "Segoe UI", system-ui, sans-serif; font-feature-settings: "cv01","ss03"; -webkit-font-smoothing: antialiased; overflow: hidden; }
+body::before { content: ""; position: fixed; inset: -20%; z-index: -1; background: radial-gradient(30% 26% at 50% 30%, rgba(242,183,5,.09), transparent 70%), radial-gradient(26% 22% at 80% 90%, rgba(255,255,255,.03), transparent 70%); animation: nuvens 24s ease-in-out infinite alternate; }
+@keyframes nuvens { to { transform: translate(2%, -3%) scale(1.06); } }
+.grade-fundo { position: fixed; inset: 0; z-index: -1; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 56px 56px; opacity: .25; mask-image: radial-gradient(60% 50% at 50% 40%, #000, transparent); }
+.caixa { width: min(380px, 92vw); animation: entra .6s var(--spring); }
+@keyframes entra { from { opacity: 0; transform: translateY(14px) scale(.98); } }
+.logo { width: 44px; height: 44px; border-radius: 11px; display: grid; place-items: center; margin: 0 auto 18px; background: var(--amarelo); color: #0b0b0b; box-shadow: 0 0 0 1px rgba(255,255,255,.12) inset, 0 10px 30px rgba(242,183,5,.3); }
+h1 { margin: 0; text-align: center; font-size: 22px; font-weight: 600; letter-spacing: -.025em; }
+p { margin: 6px 0 24px; text-align: center; color: var(--muted); }
+.cartao { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px; box-shadow: 0 8px 32px rgba(0,0,0,.5); }
+label { display: block; font-size: 12.5px; color: var(--muted); margin-bottom: 6px; font-weight: 500; }
+.campo { position: relative; }
+input { width: 100%; height: 38px; border: 1px solid var(--line); border-radius: 6px; padding: 0 40px 0 12px; font-family: inherit; font-size: 14px; background: var(--bg); color: var(--ink); transition: border-color .12s var(--ease), box-shadow .12s; }
+input:hover { border-color: var(--line-strong); } input:focus { outline: none; border-color: rgba(242,183,5,.5); box-shadow: 0 0 0 3px rgba(242,183,5,.12); }
+.ver { position: absolute; right: 4px; top: 4px; width: 30px; height: 30px; border: 0; background: none; color: var(--faint); border-radius: 5px; cursor: pointer; display: grid; place-items: center; }
+.ver:hover { color: var(--ink); background: var(--elev); }
+button.entrar { position: relative; overflow: hidden; width: 100%; height: 38px; margin-top: 14px; border: 0; border-radius: 6px; background: var(--amarelo); color: #0b0b0b; font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 0 0 1px rgba(255,255,255,.14) inset, 0 6px 20px rgba(242,183,5,.22); transition: transform .2s var(--spring), background .12s; }
+button.entrar:hover { background: #ffcf3f; } button.entrar:active { transform: scale(.98); } button.entrar:disabled { opacity: .7; cursor: wait; }
+.gira { width: 14px; height: 14px; border: 2px solid rgba(0,0,0,.25); border-top-color: #0b0b0b; border-radius: 50%; animation: gira .7s linear infinite; display: none; }
+.carregando .gira { display: block; } @keyframes gira { to { transform: rotate(360deg); } }
+.erro { min-height: 20px; margin-top: 10px; font-size: 13px; color: var(--crit); text-align: center; }
+.treme { animation: treme .4s; } @keyframes treme { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+.rod { margin-top: 18px; text-align: center; font-size: 12px; color: var(--faint); }
+.rod b { font: 500 12px "JetBrains Mono", monospace; color: var(--muted); }
+svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.ok { position: fixed; inset: 0; display: grid; place-items: center; background: var(--bg); opacity: 0; pointer-events: none; transition: opacity .35s; }
+.ok.on { opacity: 1; } .ok svg { width: 48px; height: 48px; color: var(--amarelo); stroke-width: 2.4; stroke-dasharray: 30; stroke-dashoffset: 30; transition: stroke-dashoffset .5s .1s var(--ease); } .ok.on svg { stroke-dashoffset: 0; }
+@media (prefers-reduced-motion: reduce) { *, *::before { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="grade-fundo"></div>
+<main class="caixa">
+  <div class="logo"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></div>
+  <h1>Painel da Informática</h1>
+  <p>CRJ Flexal · acesso pela rede</p>
+  <form class="cartao" id="f">
+    <label for="senha">Senha de acesso</label>
+    <div class="campo"><input type="password" id="senha" autocomplete="current-password" autofocus required>
+      <button type="button" class="ver" id="ver" title="Mostrar senha"><svg viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+    <button class="entrar" id="bt"><span class="gira"></span><span id="bt-tx">Entrar</span></button>
+    <div class="erro" id="erro"></div>
+  </form>
+  <div class="rod">A senha é definida no PC do estúdio, em <b>Acesso pela rede</b>.</div>
+</main>
+<div class="ok" id="ok"><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg></div>
+<script>
+const f = document.getElementById("f"), s = document.getElementById("senha"), bt = document.getElementById("bt"), er = document.getElementById("erro");
+document.getElementById("ver").onclick = () => { s.type = s.type === "password" ? "text" : "password"; s.focus(); };
+f.onsubmit = async e => {
+  e.preventDefault(); er.textContent = ""; bt.disabled = true; bt.classList.add("carregando"); document.getElementById("bt-tx").textContent = "Entrando…";
+  try {
+    const r = await fetch("/api/login", {method: "POST", headers: {"Content-Type": "application/json", "X-CRJ": "1"}, body: JSON.stringify({senha: s.value})});
+    const j = await r.json().catch(() => ({}));
+    if (r.ok && j.ok) {
+      document.getElementById("ok").classList.add("on");
+      // recarrega de verdade (no iPhone, ir para o mesmo endereço com #... não recarrega a página)
+      const destino = (location.pathname === "/login" ? "/" : location.pathname) + location.search + "?v=" + Date.now();
+      setTimeout(() => location.replace(destino.replace(/\?(.*)\?v=/, "?$1&v=")), 650);
+      setTimeout(() => location.reload(), 2500);   // plano B, se o navegador não navegar
+      return;
+    }
+    er.textContent = j.erro || "Senha incorreta."; f.classList.remove("treme"); void f.offsetWidth; f.classList.add("treme"); s.select();
+  } catch (x) { er.textContent = "Sem conexão com o PC do estúdio."; }
+  bt.disabled = false; bt.classList.remove("carregando"); document.getElementById("bt-tx").textContent = "Entrar";
+};
+</script>
+</body>
+</html>

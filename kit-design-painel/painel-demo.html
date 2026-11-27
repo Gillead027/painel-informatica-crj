@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>[DEMO] Painel da Informática · CRJ Flexal</title>
+<style>
+  :root {
+    --bg: #f5f6f8; --card: #fff; --txt: #1d2330; --sub: #6b7385; --borda: #e3e6ec;
+    --azul: #2f6fed; --verde: #1f9d55; --amarelo: #c98a04; --vermelho: #d64545; --cinza: #9aa1ae;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--txt); font-size: 14px; }
+  header { background: #1d2330; color: #fff; padding: 14px 24px; display: flex; align-items: center; gap: 16px; }
+  header h1 { font-size: 18px; margin: 0; font-weight: 600; }
+  header .sub { color: #aeb5c4; font-size: 12px; margin-left: auto; }
+  nav { display: flex; gap: 4px; padding: 0 24px; background: #fff; border-bottom: 1px solid var(--borda); }
+  nav button { border: 0; background: none; padding: 12px 16px; font: inherit; color: var(--sub); cursor: pointer; border-bottom: 2px solid transparent; }
+  nav button.ativo { color: var(--azul); border-bottom-color: var(--azul); font-weight: 600; }
+  main { padding: 20px 24px; max-width: 1400px; margin: 0 auto; }
+  .aba { display: none; } .aba.ativo { display: block; }
+  .barra { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: var(--card); border: 1px solid var(--borda); border-radius: 10px; padding: 10px 12px; margin-bottom: 16px; position: sticky; top: 0; z-index: 2; }
+  .barra .sel { color: var(--sub); margin-right: 8px; min-width: 150px; }
+  .barra .sep { width: 1px; height: 24px; background: var(--borda); margin: 0 4px; }
+  button.b { border: 1px solid var(--borda); background: #fff; border-radius: 7px; padding: 7px 12px; font: inherit; cursor: pointer; color: var(--txt); }
+  button.b:hover:not(:disabled) { border-color: var(--azul); color: var(--azul); }
+  button.b:disabled { opacity: .45; cursor: default; }
+  button.b.prim { background: var(--azul); color: #fff; border-color: var(--azul); }
+  button.b.perigo:hover:not(:disabled) { border-color: var(--vermelho); color: var(--vermelho); }
+  select, input[type=text], input[type=time] { border: 1px solid var(--borda); border-radius: 7px; padding: 6px 8px; font: inherit; background: #fff; }
+  .grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+  .pc { background: var(--card); border: 1px solid var(--borda); border-radius: 10px; padding: 14px; cursor: pointer; position: relative; transition: border-color .15s, box-shadow .15s; }
+  .pc:hover { border-color: #c5cbd6; }
+  .pc.marcado { border-color: var(--azul); box-shadow: 0 0 0 2px rgba(47,111,237,.18); }
+  .pc .topo { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .pc .nome { font-weight: 600; font-size: 15px; }
+  .pc input[type=checkbox] { margin-left: auto; width: 16px; height: 16px; pointer-events: none; }
+  .ponto { width: 9px; height: 9px; border-radius: 50%; background: var(--cinza); flex: none; }
+  .on .ponto { background: var(--verde); }
+  .linha { display: flex; justify-content: space-between; color: var(--sub); font-size: 12.5px; padding: 2px 0; }
+  .linha b { color: var(--txt); font-weight: 500; text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 140px; }
+  .selo { display: inline-block; font-size: 11.5px; font-weight: 600; padding: 2px 8px; border-radius: 99px; }
+  .selo.bloq { background: #e7f6ee; color: var(--verde); }
+  .selo.manut { background: #fdf3dc; color: var(--amarelo); }
+  .selo.off { background: #eef0f3; color: var(--sub); }
+  .selo.erro { background: #fbe9e9; color: var(--vermelho); }
+  .info { color: var(--sub); font-size: 12.5px; margin: 6px 0 14px; }
+  table { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--borda); border-radius: 10px; overflow: hidden; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--borda); font-size: 13px; vertical-align: top; }
+  th { background: #fafbfc; color: var(--sub); font-weight: 600; font-size: 12px; }
+  td.url { max-width: 520px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  td.url a { color: var(--azul); text-decoration: none; }
+  .cartao { background: var(--card); border: 1px solid var(--borda); border-radius: 10px; padding: 18px; max-width: 640px; }
+  .cartao h3 { margin: 0 0 4px; font-size: 15px; }
+  .campos { display: flex; gap: 18px; flex-wrap: wrap; margin: 14px 0; align-items: end; }
+  .campos label { display: flex; flex-direction: column; gap: 4px; color: var(--sub); font-size: 12px; }
+  .dias { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0 14px; }
+  .dias label { border: 1px solid var(--borda); border-radius: 7px; padding: 6px 10px; cursor: pointer; user-select: none; }
+  .dias input { display: none; }
+  .dias label:has(input:checked) { background: var(--azul); color: #fff; border-color: var(--azul); }
+  .toggle { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+  #toast { position: fixed; right: 20px; bottom: 20px; display: flex; flex-direction: column; gap: 8px; z-index: 10; }
+  .t { background: #1d2330; color: #fff; padding: 10px 14px; border-radius: 8px; max-width: 380px; font-size: 13px; box-shadow: 0 6px 20px rgba(0,0,0,.18); }
+  .t.erro { background: var(--vermelho); }
+  dialog { border: 0; border-radius: 12px; padding: 22px; max-width: 440px; box-shadow: 0 20px 50px rgba(0,0,0,.25); }
+  dialog h3 { margin: 0 0 8px; }
+  dialog .acoes { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
+  .vazio { color: var(--sub); padding: 30px; text-align: center; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Painel da Informática</h1><span style="color:#aeb5c4">CRJ Flexal</span>
+  <span class="sub" id="atualizado">carregando…</span>
+</header>
+<nav>
+  <button class="ativo" data-aba="maquinas">Máquinas</button>
+  <button data-aba="historico">Pesquisas e sites</button>
+  <button data-aba="horario">Horário de funcionamento</button>
+</nav>
+<main>
+  <!-- ======================= MAQUINAS ======================= -->
+  <section class="aba ativo" id="aba-maquinas">
+    <div class="barra">
+      <span class="sel" id="selinfo">Nenhuma selecionada</span>
+      <button class="b" id="todas">Selecionar todas</button>
+      <span class="sep"></span>
+      <select id="horas" title="Duração do modo manutenção">
+        <option value="1">1 hora</option><option value="2">2 horas</option><option value="3" selected>3 horas</option><option value="4">4 horas</option>
+      </select>
+      <button class="b" data-acao="Pausar" title="Libera instalações por algumas horas; volta sozinho">Modo manutenção</button>
+      <button class="b" data-acao="Aplicar" title="Liga todas as restrições de novo">Reativar bloqueio</button>
+      <button class="b" data-acao="Mensagem">Enviar mensagem</button>
+      <span class="sep"></span>
+      <button class="b" data-acao="Hibernar" title="Desliga guardando tudo; liga sozinho no horário de abertura">Hibernar</button>
+      <button class="b" data-acao="Ligar" title="Wake-on-LAN: ainda não funciona nestas placas">Ligar</button>
+      <button class="b perigo" data-acao="Reiniciar">Reiniciar</button>
+      <button class="b perigo" data-acao="Desligar">Desligar</button>
+    </div>
+    <div class="grade" id="grade"></div>
+  </section>
+
+  <!-- ======================= HISTORICO ======================= -->
+  <section class="aba" id="aba-historico">
+    <div class="barra">
+      <select id="h-tipo"><option value="pesquisas">Pesquisas</option><option value="sites">Sites visitados</option></select>
+      <select id="h-pc"><option value="">Todas as máquinas</option></select>
+      <select id="h-dias"><option value="0">Hoje</option><option value="7" selected>Últimos 7 dias</option><option value="30">Últimos 30 dias</option></select>
+      <input type="text" id="h-busca" placeholder="Procurar palavra…" style="min-width:200px">
+      <button class="b" id="h-filtrar">Filtrar</button>
+      <span class="sep"></span>
+      <button class="b" id="h-coletar">Coletar agora</button>
+      <span class="sel" id="h-info" style="margin-left:auto"></span>
+    </div>
+    <div id="h-tabela"></div>
+  </section>
+
+  <!-- ======================= HORARIO ======================= -->
+  <section class="aba" id="aba-horario">
+    <div class="cartao">
+      <h3>Horário de funcionamento da sala</h3>
+      <div class="info">No horário de fechamento, as máquinas avisam 5 minutos antes e <b>hibernam</b> (desligam guardando o que estava aberto).
+        Cinco minutos antes da abertura, elas <b>ligam sozinhas</b>. Funciona mesmo com o estúdio desligado.
+        Máquinas em <b>modo manutenção</b> não hibernam.</div>
+      <label class="toggle"><input type="checkbox" id="hr-ativo"> Controle de horário ligado</label>
+      <div class="campos">
+        <label>Abre às<input type="time" id="hr-abre"></label>
+        <label>Fecha às<input type="time" id="hr-fecha"></label>
+      </div>
+      <div style="color:var(--sub);font-size:12px">Dias de funcionamento</div>
+      <div class="dias" id="hr-dias"></div>
+      <button class="b prim" id="hr-salvar">Salvar e aplicar em todas</button>
+      <div class="info" id="hr-status" style="margin-top:14px"></div>
+    </div>
+  </section>
+</main>
+
+<dialog id="dlg">
+  <h3 id="dlg-tit"></h3>
+  <div id="dlg-txt" class="info"></div>
+  <input type="text" id="dlg-input" style="width:100%;display:none" maxlength="250">
+  <div class="acoes"><button class="b" id="dlg-nao">Cancelar</button><button class="b prim" id="dlg-sim">Confirmar</button></div>
+</dialog>
+<div id="toast"></div>
+
+<script>
+/* ===== MODO DEMONSTRACAO (so no kit de design) =====
+   Simula o servidor do painel com dados de exemplo, para abrir este arquivo direto no Chrome.
+   No painel real este bloco NAO existe: os dados vem de /api/estado, /api/historico etc. */
+(function () {
+  const agora = new Date(), hh = agora.toTimeString().slice(0, 8);
+  const PCS = [
+    {nome:"Maquina 1", ip:"192.168.10.150", online:true,  logado:"CRJ MAQUINA 01", estado:"ATIVO desde 17/11/2026 18:12", bloqueio:"Enabled", boot:"18/11 13:55", visto:"18/11 15:40", horario_sync:true},
+    {nome:"Maquina 2", ip:"192.168.10.188", online:true,  logado:"CRJ MAQUINA 02", estado:"ATIVO desde 17/11/2026 18:11", bloqueio:"Enabled", boot:"18/11 13:55", visto:"18/11 15:40", horario_sync:true},
+    {nome:"Maquina 3", ip:"192.168.10.125", online:true,  logado:"CRJ MAQUINA 03", estado:"PAUSADO (manutencao) ate 18/11/2026 17:00", bloqueio:"AuditOnly", boot:"18/11 13:55", visto:"18/11 15:40", horario_sync:true},
+    {nome:"Maquina 4", ip:"192.168.10.126", online:true,  logado:"", estado:"ATIVO desde 17/11/2026 18:07", bloqueio:"Enabled", boot:"18/11 13:55", visto:"18/11 15:40", horario_sync:true},
+    {nome:"Maquina 5", ip:"192.168.10.140", online:false, logado:"", estado:"", bloqueio:"", boot:"", visto:"17/11 17:29", horario_sync:true},
+    {nome:"Maquina 6", ip:"192.168.10.154", online:true,  logado:"CRJ MAQUINA 06", estado:"ATIVO desde 17/11/2026 18:17", bloqueio:"Enabled", boot:"18/11 14:02", visto:"18/11 15:40", horario_sync:false},
+    {nome:"Maquina 8", ip:"192.168.10.146", online:true,  logado:"CRJ MAQUINA 08", estado:"ATIVO desde 17/11/2026 17:57", bloqueio:"Enabled", boot:"18/11 13:55", visto:"18/11 15:40", horario_sync:true},
+    {nome:"Maquina 10",ip:"192.168.10.134", online:true,  logado:"CRJ MAQUINA 10", estado:"ATIVO desde 17/11/2026 17:53", bloqueio:"Enabled", boot:"18/11 13:55", visto:"18/11 15:40", horario_sync:true}
+  ];
+  const PESQ = [
+    ["Maquina 8","CRJ_MAQUINA_08","Chrome","2026-11-18 15:31:10","como fazer curriculo","Google"],
+    ["Maquina 3","CRJ_MAQUINA_03","Chrome","2026-11-18 15:22:47","tutorial excel tabela","YouTube"],
+    ["Maquina 1","CRJ_MAQUINA_01","Edge","2026-11-18 15:10:03","vagas jovem aprendiz vitoria","Bing"],
+    ["Maquina 6","CRJ_MAQUINA_06","Chrome","2026-11-18 14:58:21","musica para estudar","YouTube"],
+    ["Maquina 2","CRJ_MAQUINA_02","Chrome","2026-11-18 14:40:55","enem 2026 inscricao","Google"],
+    ["Maquina 10","CRJ_MAQUINA_10","Chrome","2026-11-18 14:12:09","jogos de logica online","Google"]
+  ];
+  const SITES = [
+    ["Maquina 8","CRJ_MAQUINA_08","Chrome","2026-11-18 15:32:00","https://www.google.com/search?q=como+fazer+curriculo","como fazer curriculo - Pesquisa Google"],
+    ["Maquina 3","CRJ_MAQUINA_03","Chrome","2026-11-18 15:23:30","https://www.youtube.com/watch?v=exemplo","Tutorial Excel para iniciantes - YouTube"],
+    ["Maquina 1","CRJ_MAQUINA_01","Edge","2026-11-18 15:11:12","https://www.exemplo-vagas.com.br/jovem-aprendiz","Vagas Jovem Aprendiz"],
+    ["Maquina 2","CRJ_MAQUINA_02","Chrome","2026-11-18 14:41:40","https://www.gov.br/inep/enem","Enem - INEP"]
+  ];
+  let HOR = {ativo:true, abre:"14:00", fecha:"17:30", dias:["Monday","Tuesday","Wednesday","Thursday","Friday"]};
+  const resp = d => Promise.resolve({ json: () => Promise.resolve(JSON.parse(JSON.stringify(d))) });
+  window.fetch = function (url, opt) {
+    url = String(url);
+    if (url.startsWith("/api/estado")) return resp({pcs: PCS, atualizado: hh, horario: HOR, hist_atualizado: "18/11 15:30", hist_rodando: false});
+    if (url.startsWith("/api/historico/atualizar")) return resp({ok: true});
+    if (url.startsWith("/api/historico")) {
+      const q = new URLSearchParams(url.split("?")[1] || ""); let l = q.get("tipo") === "sites" ? SITES : PESQ;
+      if (q.get("pc")) l = l.filter(x => x[0] === q.get("pc"));
+      if (q.get("busca")) l = l.filter(x => (x[4] + " " + (x[5]||"")).toLowerCase().includes(q.get("busca").toLowerCase()));
+      return resp({linhas: l});
+    }
+    if (url.startsWith("/api/horario")) { HOR = JSON.parse(opt.body); return resp({ok: true}); }
+    if (url.startsWith("/api/acao")) { const b = JSON.parse(opt.body); return resp({resultados: b.ips.map(ip => ({ip, ok: true, msg: "(demonstracao)"}))}); }
+    return resp({});
+  };
+})();
+</script>
+<script>
+const $ = s => document.querySelector(s);
+let PCS = [], SEL = new Set(), HOR = null;
+const DIAS = [["Monday","Seg"],["Tuesday","Ter"],["Wednesday","Qua"],["Thursday","Qui"],["Friday","Sex"],["Saturday","Sáb"],["Sunday","Dom"]];
+
+function toast(msg, erro=false) {
+  const d = document.createElement("div"); d.className = "t" + (erro ? " erro" : ""); d.textContent = msg;
+  $("#toast").appendChild(d); setTimeout(() => d.remove(), 6000);
+}
+async function post(url, corpo) {
+  const r = await fetch(url, {method:"POST", headers:{"Content-Type":"application/json","X-CRJ":"1"}, body: JSON.stringify(corpo)});
+  return r.json();
+}
+function esc(s) { return String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+// ---------- abas
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("nav button").forEach(x => x.classList.toggle("ativo", x === b));
+  document.querySelectorAll(".aba").forEach(a => a.classList.toggle("ativo", a.id === "aba-" + b.dataset.aba));
+  if (b.dataset.aba === "historico") carregarHistorico();
+});
+
+// ---------- maquinas
+function seloEstado(p) {
+  if (!p.online) return `<span class="selo off">Desligada / hibernando</span>`;
+  if (p.estado.startsWith("PAUSADO")) { const m = p.estado.match(/ate .* (\d\d:\d\d)/); return `<span class="selo manut">Manutenção${m ? " até " + m[1] : ""}</span>`; }
+  if (p.bloqueio === "Enabled") return `<span class="selo bloq">Bloqueada</span>`;
+  return `<span class="selo erro">Verificar</span>`;
+}
+function desenhar() {
+  $("#grade").innerHTML = PCS.map(p => `
+    <div class="pc ${p.online ? "on" : ""} ${SEL.has(p.ip) ? "marcado" : ""}" data-ip="${p.ip}">
+      <div class="topo"><span class="ponto"></span><span class="nome">${esc(p.nome)}</span><input type="checkbox" ${SEL.has(p.ip) ? "checked" : ""}></div>
+      <div style="margin-bottom:8px">${seloEstado(p)}</div>
+      <div class="linha">Usuário <b>${p.online ? esc(p.logado || "ninguém") : "—"}</b></div>
+      <div class="linha">Ligada desde <b>${p.online ? esc(p.boot) : "—"}</b></div>
+      <div class="linha">Visto por último <b>${esc(p.visto || "—")}</b></div>
+      <div class="linha">IP <b>${esc(p.ip)}</b></div>
+      ${HOR && HOR.ativo ? `<div class="linha">Horário <b>${p.horario_sync ? "aplicado" : "pendente"}</b></div>` : ""}
+    </div>`).join("") || `<div class="vazio">Carregando máquinas…</div>`;
+  document.querySelectorAll(".pc").forEach(c => c.onclick = () => { const ip = c.dataset.ip; SEL.has(ip) ? SEL.delete(ip) : SEL.add(ip); desenhar(); });
+  const n = SEL.size;
+  $("#selinfo").textContent = n ? `${n} selecionada${n > 1 ? "s" : ""}` : "Nenhuma selecionada";
+  document.querySelectorAll("[data-acao]").forEach(b => b.disabled = !n);
+  $("#todas").textContent = n === PCS.length && n ? "Limpar seleção" : "Selecionar todas";
+}
+$("#todas").onclick = () => { if (SEL.size === PCS.length) SEL.clear(); else PCS.forEach(p => SEL.add(p.ip)); desenhar(); };
+
+async function atualizar() {
+  try {
+    const r = await (await fetch("/api/estado")).json();
+    PCS = r.pcs; HOR = r.horario;
+    const on = PCS.filter(p => p.online).length;
+    $("#atualizado").textContent = `${on} de ${PCS.length} ligadas · atualizado às ${r.atualizado || "…"}`;
+    $("#h-info").textContent = r.hist_rodando ? "Coletando histórico…" : (r.hist_atualizado ? `Última coleta: ${r.hist_atualizado}` : "Ainda sem coleta");
+    if (!$("#h-pc").dataset.ok && PCS.length) { $("#h-pc").innerHTML += PCS.map(p => `<option>${esc(p.nome)}</option>`).join(""); $("#h-pc").dataset.ok = 1; }
+    if (!$("#hr-abre").dataset.ok) preencherHorario();
+    statusHorario();
+    desenhar();
+  } catch (e) { $("#atualizado").textContent = "sem conexão com o painel"; }
+}
+
+function confirmar(tit, txt, comInput=false) {
+  return new Promise(ok => {
+    $("#dlg-tit").textContent = tit; $("#dlg-txt").innerHTML = txt;
+    const inp = $("#dlg-input"); inp.style.display = comInput ? "block" : "none"; inp.value = "";
+    $("#dlg").showModal(); if (comInput) inp.focus();
+    $("#dlg-sim").onclick = () => { $("#dlg").close(); ok(comInput ? (inp.value.trim() || null) : true); };
+    $("#dlg-nao").onclick = () => { $("#dlg").close(); ok(null); };
+  });
+}
+const TEXTOS = {
+  Hibernar: ["Hibernar máquinas", "As máquinas selecionadas vão <b>desligar em 5 segundos</b>, guardando o que estava aberto. Elas ligam sozinhas no próximo horário de abertura (se o controle de horário estiver ligado)."],
+  Reiniciar: ["Reiniciar máquinas", "As máquinas selecionadas vão mostrar um aviso e <b>reiniciar em 1 minuto</b>."],
+  Desligar: ["Desligar máquinas", "As máquinas vão <b>desligar de vez em 1 minuto</b>. Atenção: desligadas assim, elas <b>não ligam sozinhas</b> nem pelo painel; será preciso apertar o botão. Para o dia a dia, prefira <b>Hibernar</b>."],
+  Pausar: ["Modo manutenção", "As restrições das máquinas selecionadas serão <b>desligadas temporariamente</b> e voltarão sozinhas no horário marcado."],
+  Aplicar: ["Reativar bloqueio", "Todas as restrições serão <b>ligadas de novo</b> nas máquinas selecionadas."],
+  Ligar: ["Ligar máquinas", "Vou enviar o sinal de ligar (Wake-on-LAN). <b>Ainda não funciona nestas placas</b>: só tem efeito depois de ativarmos o Wake-on-LAN no driver e na BIOS."],
+};
+document.querySelectorAll("[data-acao]").forEach(b => b.onclick = async () => {
+  const acao = b.dataset.acao, ips = [...SEL], nomes = PCS.filter(p => SEL.has(p.ip)).map(p => p.nome).join(", ");
+  const corpo = {acao, ips};
+  if (acao === "Mensagem") {
+    const t = await confirmar("Mensagem para as máquinas", `Aparece na tela de: <b>${esc(nomes)}</b>`, true);
+    if (!t) return; corpo.texto = t;
+  } else {
+    let [tit, txt] = TEXTOS[acao];
+    if (acao === "Pausar") { corpo.horas = +$("#horas").value; txt += ` Duração: <b>${corpo.horas} h</b>.`; }
+    if (!await confirmar(tit, `${txt}<br><br>Máquinas: <b>${esc(nomes)}</b>`)) return;
+  }
+  toast(`${b.textContent}: enviando para ${ips.length} máquina(s)…`);
+  try {
+    const r = await post("/api/acao", corpo);
+    const ok = (r.resultados || []).filter(x => x.ok).length, falhas = (r.resultados || []).filter(x => !x.ok);
+    toast(`${b.textContent}: ${ok} ok${falhas.length ? `, ${falhas.length} falharam (desligadas?)` : ""}`, falhas.length > 0 && ok === 0);
+  } catch (e) { toast("Erro ao executar: " + e, true); }
+  setTimeout(atualizar, 3000);
+});
+
+// ---------- historico
+async function carregarHistorico() {
+  const tipo = $("#h-tipo").value;
+  const q = new URLSearchParams({tipo, pc: $("#h-pc").value, dias: $("#h-dias").value, busca: $("#h-busca").value});
+  const r = await (await fetch("/api/historico?" + q)).json();
+  if (!r.linhas.length) { $("#h-tabela").innerHTML = `<div class="vazio">Nada encontrado neste período.</div>`; return; }
+  const fmt = s => { const [d, h] = s.split(" "); const [a, m, dd] = d.split("-"); return `${dd}/${m} ${h.slice(0,5)}`; };
+  $("#h-tabela").innerHTML = tipo === "pesquisas"
+    ? `<table><tr><th>Quando</th><th>Máquina</th><th>Pesquisa</th><th>Onde</th><th>Navegador</th></tr>${r.linhas.map(l =>
+        `<tr><td>${fmt(l[3])}</td><td>${esc(l[0])}</td><td><b>${esc(l[4])}</b></td><td>${esc(l[5])}</td><td>${esc(l[2])}</td></tr>`).join("")}</table>`
+    : `<table><tr><th>Quando</th><th>Máquina</th><th>Página</th><th>Endereço</th><th>Navegador</th></tr>${r.linhas.map(l =>
+        `<tr><td>${fmt(l[3])}</td><td>${esc(l[0])}</td><td>${esc(l[5])}</td><td class="url"><a href="${esc(l[4])}" target="_blank" rel="noopener noreferrer">${esc(l[4])}</a></td><td>${esc(l[2])}</td></tr>`).join("")}</table>`;
+}
+$("#h-filtrar").onclick = carregarHistorico;
+$("#h-busca").onkeydown = e => { if (e.key === "Enter") carregarHistorico(); };
+["#h-tipo", "#h-pc", "#h-dias"].forEach(s => $(s).onchange = carregarHistorico);
+$("#h-coletar").onclick = async () => { await post("/api/historico/atualizar", {}); toast("Coletando histórico das máquinas ligadas… (leva até 1 minuto)"); setTimeout(() => { atualizar(); carregarHistorico(); }, 45000); };
+
+// ---------- horario
+$("#hr-dias").innerHTML = DIAS.map(([v, t]) => `<label><input type="checkbox" value="${v}">${t}</label>`).join("");
+function preencherHorario() {
+  if (!HOR) return;
+  $("#hr-ativo").checked = HOR.ativo; $("#hr-abre").value = HOR.abre; $("#hr-fecha").value = HOR.fecha;
+  document.querySelectorAll("#hr-dias input").forEach(i => i.checked = HOR.dias.includes(i.value));
+  $("#hr-abre").dataset.ok = 1;
+}
+function statusHorario() {
+  if (!HOR) return;
+  if (!HOR.ativo) { $("#hr-status").textContent = "Controle de horário desligado."; return; }
+  const pend = PCS.filter(p => !p.horario_sync).map(p => p.nome);
+  $("#hr-status").innerHTML = pend.length
+    ? `Aplicado em ${PCS.length - pend.length} de ${PCS.length}. Pendentes (serão atualizadas quando ligarem): <b>${esc(pend.join(", "))}</b>`
+    : `Aplicado em todas as ${PCS.length} máquinas.`;
+}
+$("#hr-salvar").onclick = async () => {
+  const corpo = {ativo: $("#hr-ativo").checked, abre: $("#hr-abre").value, fecha: $("#hr-fecha").value,
+                 dias: [...document.querySelectorAll("#hr-dias input:checked")].map(i => i.value)};
+  if (corpo.ativo && (!corpo.abre || !corpo.fecha || !corpo.dias.length)) return toast("Preencha horário e dias.", true);
+  const r = await post("/api/horario", corpo);
+  if (r.ok) { toast("Horário salvo. Aplicando nas máquinas ligadas…"); setTimeout(atualizar, 20000); } else toast(r.erro || "Erro", true);
+};
+
+atualizar(); setInterval(atualizar, 10000);
+</script>
+</body>
+</html>

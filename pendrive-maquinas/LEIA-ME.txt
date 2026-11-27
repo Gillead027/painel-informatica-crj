@@ -1,0 +1,11 @@
+﻿LIBERAR O PAINEL DO ESTÚDIO (uma vez em cada máquina)
+
+1. Copie esta pasta para um pendrive.
+2. Em cada máquina da sala (as 9), dê dois cliques em LIBERAR-ESTUDIO.cmd.
+   O Windows vai pedir a senha do CRJ-Admin: digite e clique em Sim.
+3. Deve aparecer "Pronto: 3 regra(s)". Aperte Enter.
+
+O que muda: a máquina passa a aceitar o painel do estúdio em qualquer IP da
+rede da sala (antes só aceitava o 192.168.10.124). Continua exigindo a senha
+do CRJ-Admin e a chave do Veyon. Não mexe na rede, no IP nem nos arquivos.
+O resultado de cada máquina fica anotado em resultado.txt, nesta pasta.

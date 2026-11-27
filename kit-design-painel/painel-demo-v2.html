@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel da Informática · CRJ Flexal</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%232f6fed'/%3E%3Cpath d='M6 7h12v8H6z M9 18h6' stroke='white' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+:root {
+  --bg: #f3f4f7; --surface: #ffffff; --surface-2: #f8f9fb; --ink: #151a26; --ink-2: #4a5265; --muted: #8a91a3;
+  --line: #e4e7ee; --line-2: #eef0f4; --accent: #2f6fed; --accent-soft: #e8efff; --accent-ink: #1f4fc0;
+  --side: #121726; --side-2: #1b2235; --side-ink: #c9cfdd; --side-muted: #7d869b;
+  --good: #0ca30c; --good-soft: #e6f6e6; --good-ink: #006300;
+  --warn: #fab219; --warn-soft: #fff4dc; --warn-ink: #8a5a00;
+  --crit: #d03b3b; --crit-soft: #fbeaea; --crit-ink: #a12424;
+  --off: #9aa1ae; --off-soft: #eef0f3; --off-ink: #5b6273;
+  --shadow: 0 1px 2px rgba(16,24,40,.05), 0 1px 3px rgba(16,24,40,.06);
+  --shadow-lg: 0 12px 32px rgba(16,24,40,.14), 0 2px 6px rgba(16,24,40,.08);
+  --r: 14px;
+}
+[data-tema="escuro"] .acoes { background: #232b3d; }
+[data-tema="escuro"] {
+  --bg: #0f131c; --surface: #171c28; --surface-2: #1c2230; --ink: #e9ecf3; --ink-2: #b4bccc; --muted: #7d869b;
+  --line: #262d3d; --line-2: #202736; --accent: #5b8cff; --accent-soft: #1d2a4a; --accent-ink: #9bb8ff;
+  --side: #0a0d14; --side-2: #141a27;
+  --good-soft: #12301a; --good-ink: #5fd35f; --warn-soft: #3a2c0c; --warn-ink: #ffc952;
+  --crit-soft: #3a1717; --crit-ink: #ff8a8a; --off-soft: #222836; --off-ink: #a3aabb;
+  --shadow: 0 1px 2px rgba(0,0,0,.3); --shadow-lg: 0 14px 36px rgba(0,0,0,.5);
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; font-family: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif; background: var(--bg); color: var(--ink);
+  font-size: 14px; display: grid; grid-template-columns: 236px 1fr; -webkit-font-smoothing: antialiased; }
+svg.i { width: 18px; height: 18px; flex: none; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---------- menu lateral ---------- */
+aside { background: var(--side); color: var(--side-ink); display: flex; flex-direction: column; padding: 20px 14px; position: sticky; top: 0; height: 100vh; }
+.marca { display: flex; align-items: center; gap: 11px; padding: 4px 8px 22px; }
+.marca .logo { width: 38px; height: 38px; border-radius: 11px; background: linear-gradient(135deg, #2f6fed, #6a4cf5); display: grid; place-items: center; color: #fff; box-shadow: 0 4px 14px rgba(47,111,237,.4); }
+.marca b { display: block; color: #fff; font-size: 15px; letter-spacing: .1px; }
+.marca span { font-size: 12px; color: var(--side-muted); }
+.menu { display: flex; flex-direction: column; gap: 3px; }
+.menu button { display: flex; align-items: center; gap: 11px; border: 0; background: none; color: var(--side-ink); font: inherit; padding: 10px 12px; border-radius: 9px; cursor: pointer; text-align: left; }
+.menu button:hover { background: var(--side-2); color: #fff; }
+.menu button.ativo { background: var(--side-2); color: #fff; box-shadow: inset 3px 0 0 var(--accent); }
+.menu .cont { margin-left: auto; font-size: 11.5px; background: rgba(255,255,255,.08); padding: 1px 7px; border-radius: 99px; color: var(--side-ink); }
+.rodape { margin-top: auto; display: flex; flex-direction: column; gap: 10px; padding: 0 6px; }
+.vivo { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--side-muted); }
+.vivo .pulso { width: 8px; height: 8px; border-radius: 50%; background: var(--good); box-shadow: 0 0 0 0 rgba(12,163,12,.6); animation: pulso 2s infinite; }
+.vivo.erro .pulso { background: var(--crit); animation: none; }
+@keyframes pulso { 70% { box-shadow: 0 0 0 7px rgba(12,163,12,0); } 100% { box-shadow: 0 0 0 0 rgba(12,163,12,0); } }
+.tema { display: flex; align-items: center; gap: 8px; border: 1px solid var(--side-2); background: none; color: var(--side-ink); border-radius: 9px; padding: 8px 10px; font: inherit; font-size: 12.5px; cursor: pointer; }
+.tema:hover { background: var(--side-2); }
+
+/* ---------- area principal ---------- */
+main { padding: 26px 32px 120px; min-width: 0; }
+.cab { display: flex; align-items: flex-end; gap: 16px; margin-bottom: 20px; }
+.cab h1 { margin: 0; font-size: 24px; font-weight: 650; letter-spacing: -.3px; }
+.cab p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+.cab .dir { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+.aba { display: none; } .aba.ativo { display: block; animation: entra .18s ease; }
+@keyframes entra { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+/* resumo */
+.resumo { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 22px; }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px 18px; box-shadow: var(--shadow); display: flex; align-items: center; gap: 14px; cursor: pointer; transition: border-color .15s, transform .15s; }
+.tile:hover { transform: translateY(-1px); border-color: var(--accent); }
+.tile.filtro { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.tile .ic { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; flex: none; }
+.tile .n { font-size: 26px; font-weight: 650; line-height: 1; letter-spacing: -.5px; font-variant-numeric: tabular-nums; }
+.tile .l { color: var(--ink-2); font-size: 12.5px; margin-top: 4px; }
+.t-on .ic { background: var(--accent-soft); color: var(--accent); }
+.t-bloq .ic { background: var(--good-soft); color: var(--good-ink); }
+.t-manut .ic { background: var(--warn-soft); color: var(--warn-ink); }
+.t-off .ic { background: var(--off-soft); color: var(--off-ink); }
+
+/* ferramentas */
+.ferr { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+.ferr .titulo { font-weight: 600; font-size: 15px; }
+.ferr .dica { color: var(--muted); font-size: 12.5px; }
+.ferr .dir { margin-left: auto; display: flex; gap: 8px; }
+.btn { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 9px; padding: 8px 13px; font: inherit; font-size: 13px; cursor: pointer; box-shadow: var(--shadow); white-space: nowrap; }
+.btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.btn:disabled { opacity: .45; cursor: default; }
+.btn.prim { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn.prim:hover:not(:disabled) { filter: brightness(1.08); color: #fff; }
+.btn.fant { box-shadow: none; background: transparent; }
+select, input[type=text], input[type=time] { border: 1px solid var(--line); border-radius: 9px; padding: 8px 10px; font: inherit; font-size: 13px; background: var(--surface); color: var(--ink); }
+select:focus, input:focus { outline: 2px solid var(--accent-soft); border-color: var(--accent); }
+
+/* cartoes de maquina */
+.grade { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
+.pc { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; cursor: pointer; position: relative; box-shadow: var(--shadow); transition: border-color .15s, box-shadow .15s, transform .15s; user-select: none; }
+.pc:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.pc.marcado { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft), var(--shadow); }
+.pc.desl { background: var(--surface-2); }
+.pc .topo { display: flex; align-items: center; gap: 12px; }
+.monitor { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; flex: none; position: relative; }
+.monitor svg.i { width: 22px; height: 22px; }
+.monitor .led { position: absolute; right: -2px; bottom: -2px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--surface); }
+.pc .nome { font-weight: 650; font-size: 15.5px; }
+.pc .ip { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+.check { margin-left: auto; width: 22px; height: 22px; border-radius: 7px; border: 1.5px solid var(--line); display: grid; place-items: center; color: transparent; transition: .15s; }
+.pc.marcado .check { background: var(--accent); border-color: var(--accent); color: #fff; }
+.pc .check svg.i { width: 14px; height: 14px; stroke-width: 3; }
+.selo { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 4px 10px 4px 8px; border-radius: 99px; margin: 14px 0 12px; }
+.selo svg.i { width: 14px; height: 14px; stroke-width: 2.2; }
+.s-bloq { background: var(--good-soft); color: var(--good-ink); }
+.s-manut { background: var(--warn-soft); color: var(--warn-ink); }
+.s-off { background: var(--off-soft); color: var(--off-ink); }
+.s-crit { background: var(--crit-soft); color: var(--crit-ink); }
+.dados { display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; font-size: 12.5px; border-top: 1px solid var(--line-2); padding-top: 12px; }
+.dados dt { color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.dados dt svg.i { width: 14px; height: 14px; }
+.dados dd { margin: 0; text-align: right; color: var(--ink); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dados dd.fraco { color: var(--muted); font-weight: 400; }
+
+/* barra de acoes flutuante */
+.acoes { position: fixed; left: calc(236px + (100vw - 236px) / 2); transform: translate(-50%, 180%); bottom: 22px; background: var(--side); color: #fff; border-radius: 16px; padding: 8px 10px; display: flex; align-items: center; gap: 2px; box-shadow: var(--shadow-lg); border: 1px solid rgba(255,255,255,.12); transition: transform .22s cubic-bezier(.2,.9,.3,1.2); z-index: 5; flex-wrap: nowrap; white-space: nowrap; }
+.acoes.on { transform: translate(-50%, 0); }
+.acoes .qtd { font-weight: 600; padding: 0 10px 0 6px; white-space: nowrap; }
+.acoes .sep { width: 1px; height: 26px; background: rgba(255,255,255,.14); margin: 0 4px; }
+.acoes button { display: inline-flex; align-items: center; gap: 7px; border: 0; background: transparent; color: #dfe4ef; font: inherit; font-size: 13px; padding: 8px 9px; border-radius: 9px; cursor: pointer; white-space: nowrap; }
+.acoes button:hover { background: rgba(255,255,255,.09); color: #fff; }
+.acoes button.perigo:hover { background: rgba(208,59,59,.22); color: #ffb3b3; }
+.acoes select { background: rgba(255,255,255,.08); color: #fff; border-color: rgba(255,255,255,.14); padding: 6px 8px; }
+.acoes select option { color: #000; }
+
+/* historico */
+.hist { display: grid; grid-template-columns: 1fr 300px; gap: 16px; align-items: start; }
+.painel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--shadow); overflow: hidden; }
+.painel h3 { margin: 0; padding: 14px 16px; font-size: 14px; border-bottom: 1px solid var(--line-2); display: flex; align-items: center; gap: 8px; }
+.segm { display: inline-flex; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 3px; box-shadow: var(--shadow); }
+.segm button { border: 0; background: none; font: inherit; font-size: 13px; color: var(--ink-2); padding: 6px 12px; border-radius: 7px; cursor: pointer; }
+.segm button.ativo { background: var(--accent); color: #fff; }
+.busca { position: relative; } .busca svg.i { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--muted); width: 16px; height: 16px; }
+.busca input { padding-left: 32px; min-width: 220px; }
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 10px 16px; border-bottom: 1px solid var(--line-2); font-size: 13px; vertical-align: middle; }
+th { color: var(--muted); font-weight: 600; font-size: 11.5px; text-transform: uppercase; letter-spacing: .4px; background: var(--surface-2); position: sticky; top: 0; }
+tr:hover td { background: var(--surface-2); }
+.tabwrap { max-height: calc(100vh - 230px); overflow: auto; }
+td.quando { color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+td.termo { font-weight: 600; }
+td.url { max-width: 420px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+td.url a { color: var(--accent); text-decoration: none; } td.url a:hover { text-decoration: underline; }
+.tag { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; padding: 2px 8px; border-radius: 99px; background: var(--surface-2); border: 1px solid var(--line); color: var(--ink-2); white-space: nowrap; }
+.tag.yt { color: #c4302b; } .tag.gg { color: #2f6fed; } .tag.bg { color: #0b8f8a; }
+.ranking { padding: 8px 16px 16px; }
+.rk { display: grid; grid-template-columns: 1fr auto; gap: 4px 10px; padding: 8px 0; border-bottom: 1px solid var(--line-2); cursor: pointer; }
+.rk:last-child { border-bottom: 0; }
+.rk:hover .rk-t { color: var(--accent); }
+.rk-t { font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rk-n { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.rk-b { grid-column: 1 / -1; height: 4px; border-radius: 4px; background: var(--line-2); overflow: hidden; }
+.rk-b i { display: block; height: 100%; border-radius: 4px; background: var(--accent); }
+
+/* horario */
+.hor { display: grid; grid-template-columns: minmax(0, 560px) 1fr; gap: 18px; align-items: start; }
+.cartao { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 22px; box-shadow: var(--shadow); }
+.cartao h3 { margin: 0 0 4px; font-size: 16px; }
+.cartao .sub { color: var(--muted); font-size: 13px; margin: 0 0 18px; }
+.chave { display: flex; align-items: center; gap: 12px; padding: 14px; border: 1px solid var(--line); border-radius: 12px; margin-bottom: 18px; cursor: pointer; }
+.chave input { display: none; }
+.chave .trilho { width: 42px; height: 24px; border-radius: 99px; background: var(--line); position: relative; transition: .2s; flex: none; }
+.chave .trilho::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.25); transition: .2s; }
+.chave input:checked + .trilho { background: var(--good); }
+.chave input:checked + .trilho::after { left: 21px; }
+.chave b { display: block; } .chave span { color: var(--muted); font-size: 12.5px; }
+.horas { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+.horas label { display: flex; flex-direction: column; gap: 6px; font-size: 12.5px; color: var(--ink-2); font-weight: 600; }
+.horas input { font-size: 20px; padding: 10px 12px; font-variant-numeric: tabular-nums; }
+.rot { font-size: 12.5px; color: var(--ink-2); font-weight: 600; margin-bottom: 8px; }
+.dias { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 22px; }
+.dias label { width: 52px; text-align: center; border: 1px solid var(--line); border-radius: 10px; padding: 9px 0; cursor: pointer; user-select: none; font-weight: 600; font-size: 13px; color: var(--ink-2); }
+.dias input { display: none; }
+.dias label:has(input:checked) { background: var(--accent); color: #fff; border-color: var(--accent); }
+.linha-tempo { display: flex; flex-direction: column; gap: 0; }
+.passo { display: grid; grid-template-columns: 56px 26px 1fr; gap: 0 10px; align-items: start; }
+.passo .h { font-weight: 650; font-variant-numeric: tabular-nums; padding-top: 2px; text-align: right; }
+.passo .eixo { display: flex; flex-direction: column; align-items: center; height: 100%; }
+.passo .bol { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; flex: none; }
+.passo .bol svg.i { width: 14px; height: 14px; stroke-width: 2.2; }
+.passo .fio { width: 2px; flex: 1; background: var(--line); min-height: 22px; }
+.passo .tx { padding: 2px 0 18px; } .passo .tx b { display: block; font-size: 13.5px; } .passo .tx span { color: var(--muted); font-size: 12.5px; }
+.sync { display: flex; align-items: center; gap: 8px; margin-top: 16px; font-size: 13px; color: var(--ink-2); padding: 12px 14px; background: var(--surface-2); border-radius: 10px; }
+
+/* gerais */
+.vazio { color: var(--muted); padding: 48px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.vazio svg.i { width: 34px; height: 34px; opacity: .5; }
+#toast { position: fixed; right: 22px; top: 22px; display: flex; flex-direction: column; gap: 8px; z-index: 20; }
+.t { display: flex; align-items: center; gap: 10px; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-left: 4px solid var(--accent); padding: 11px 14px; border-radius: 10px; max-width: 380px; font-size: 13px; box-shadow: var(--shadow-lg); animation: entra .2s ease; }
+.t.ok { border-left-color: var(--good); } .t.erro { border-left-color: var(--crit); }
+dialog { border: 0; border-radius: 16px; padding: 0; width: 440px; max-width: 92vw; background: var(--surface); color: var(--ink); box-shadow: var(--shadow-lg); }
+dialog::backdrop { background: rgba(10,14,22,.45); backdrop-filter: blur(2px); }
+.dlg { padding: 22px; }
+.dlg .ic { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; margin-bottom: 14px; background: var(--accent-soft); color: var(--accent); }
+.dlg.perigo .ic { background: var(--crit-soft); color: var(--crit); }
+.dlg h3 { margin: 0 0 6px; font-size: 17px; }
+.dlg .txt { color: var(--ink-2); font-size: 13.5px; line-height: 1.5; }
+.dlg .alvos { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 6px; }
+.dlg textarea { width: 100%; margin-top: 12px; border: 1px solid var(--line); border-radius: 10px; padding: 10px; font: inherit; resize: vertical; min-height: 80px; background: var(--surface); color: var(--ink); }
+.dlg .bt { display: flex; justify-content: flex-end; gap: 8px; padding: 14px 22px; background: var(--surface-2); border-top: 1px solid var(--line-2); }
+.bt .btn.prim.perigo { background: var(--crit); border-color: var(--crit); }
+@media (max-width: 1100px) { .resumo { grid-template-columns: repeat(2, 1fr); } .hist, .hor { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<!-- ícones -->
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></symbol>
+  <symbol id="i-busca" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></symbol>
+  <symbol id="i-relogio" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-cadeado" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+  <symbol id="i-chave" viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-2.5z"/></symbol>
+  <symbol id="i-power" viewBox="0 0 24 24"><path d="M12 3v9M6.3 6.3a8 8 0 1 0 11.4 0"/></symbol>
+  <symbol id="i-lua" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol>
+  <symbol id="i-sol" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="i-msg" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></symbol>
+  <symbol id="i-reini" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></symbol>
+  <symbol id="i-ligar" viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></symbol>
+  <symbol id="i-alerta" viewBox="0 0 24 24"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17h.01"/></symbol>
+  <symbol id="i-wifi-off" viewBox="0 0 24 24"><path d="M3 3l18 18M8.5 16.5a5 5 0 0 1 7 0M5 13a10 10 0 0 1 5.2-2.8M19 13a10 10 0 0 0-2.4-1.7M12 20h.01"/></symbol>
+  <symbol id="i-todas" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="i-baixar" viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-sino" viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 1 1 12 0v5l2 2H4z"/><path d="M10 21h4"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4v16l13-8z"/></symbol>
+</svg>
+
+<aside>
+  <div class="marca">
+    <div class="logo"><svg class="i"><use href="#i-monitor"/></svg></div>
+    <div><b>Informática</b><span>CRJ Flexal</span></div>
+  </div>
+  <nav class="menu">
+    <button class="ativo" data-aba="maquinas"><svg class="i"><use href="#i-todas"/></svg>Máquinas<span class="cont" id="m-cont">–</span></button>
+    <button data-aba="historico"><svg class="i"><use href="#i-busca"/></svg>Pesquisas e sites</button>
+    <button data-aba="horario"><svg class="i"><use href="#i-relogio"/></svg>Horário</button>
+  </nav>
+  <div class="rodape">
+    <div class="vivo" id="vivo"><span class="pulso"></span><span id="atualizado">conectando…</span></div>
+    <button class="tema" id="tema"><svg class="i"><use href="#i-lua"/></svg><span>Modo escuro</span></button>
+  </div>
+</aside>
+
+<main>
+  <!-- ======================= MÁQUINAS ======================= -->
+  <section class="aba ativo" id="aba-maquinas">
+    <div class="cab">
+      <div><h1>Máquinas</h1><p id="saud">Visão geral da sala de informática</p></div>
+    </div>
+    <div class="resumo">
+      <div class="tile t-on" data-filtro="on"><div class="ic"><svg class="i"><use href="#i-power"/></svg></div><div><div class="n" id="r-on">–</div><div class="l">Ligadas</div></div></div>
+      <div class="tile t-bloq" data-filtro="bloq"><div class="ic"><svg class="i"><use href="#i-cadeado"/></svg></div><div><div class="n" id="r-bloq">–</div><div class="l">Bloqueadas</div></div></div>
+      <div class="tile t-manut" data-filtro="manut"><div class="ic"><svg class="i"><use href="#i-chave"/></svg></div><div><div class="n" id="r-manut">–</div><div class="l">Em manutenção</div></div></div>
+      <div class="tile t-off" data-filtro="off"><div class="ic"><svg class="i"><use href="#i-lua"/></svg></div><div><div class="n" id="r-off">–</div><div class="l">Desligadas</div></div></div>
+    </div>
+    <div class="ferr">
+      <span class="titulo" id="g-titulo">Todas as máquinas</span>
+      <span class="dica">Clique nos cartões para selecionar</span>
+      <div class="dir"><button class="btn" id="todas"><svg class="i"><use href="#i-check"/></svg><span>Selecionar todas</span></button></div>
+    </div>
+    <div class="grade" id="grade"></div>
+  </section>
+
+  <!-- ======================= HISTÓRICO ======================= -->
+  <section class="aba" id="aba-historico">
+    <div class="cab">
+      <div><h1>Pesquisas e sites</h1><p id="h-info">Histórico do Chrome e do Edge dos alunos</p></div>
+      <div class="dir"><button class="btn" id="h-coletar"><svg class="i"><use href="#i-baixar"/></svg>Coletar agora</button></div>
+    </div>
+    <div class="ferr">
+      <div class="segm" id="h-tipo"><button class="ativo" data-v="pesquisas">Pesquisas</button><button data-v="sites">Sites visitados</button></div>
+      <select id="h-pc"><option value="">Todas as máquinas</option></select>
+      <div class="segm" id="h-dias"><button data-v="0">Hoje</button><button class="ativo" data-v="7">7 dias</button><button data-v="30">30 dias</button></div>
+      <div class="busca"><svg class="i"><use href="#i-busca"/></svg><input type="text" id="h-busca" placeholder="Procurar palavra…"></div>
+    </div>
+    <div class="hist">
+      <div class="painel"><div class="tabwrap" id="h-tabela"></div></div>
+      <div class="painel" id="h-rank-box"><h3><svg class="i"><use href="#i-busca"/></svg>Mais pesquisados</h3><div class="ranking" id="h-rank"></div></div>
+    </div>
+  </section>
+
+  <!-- ======================= HORÁRIO ======================= -->
+  <section class="aba" id="aba-horario">
+    <div class="cab"><div><h1>Horário de funcionamento</h1><p>As máquinas ligam e desligam sozinhas, mesmo com o estúdio desligado</p></div></div>
+    <div class="hor">
+      <div class="cartao">
+        <label class="chave"><input type="checkbox" id="hr-ativo"><span class="trilho"></span><div><b>Controle de horário</b><span id="hr-chave-tx">Ligado</span></div></label>
+        <div class="horas">
+          <label>Abre às<input type="time" id="hr-abre"></label>
+          <label>Fecha às<input type="time" id="hr-fecha"></label>
+        </div>
+        <div class="rot">Dias de funcionamento</div>
+        <div class="dias" id="hr-dias"></div>
+        <button class="btn prim" id="hr-salvar"><svg class="i"><use href="#i-check"/></svg>Salvar e aplicar em todas</button>
+        <div class="sync" id="hr-status"></div>
+      </div>
+      <div class="cartao">
+        <h3>Como fica o dia</h3>
+        <p class="sub">Máquinas em modo manutenção não desligam no fechamento.</p>
+        <div class="linha-tempo" id="hr-linha"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- barra de ações (aparece ao selecionar) -->
+<div class="acoes" id="acoes">
+  <span class="qtd" id="selinfo">0 selecionadas</span>
+  <button id="limpar" title="Limpar seleção"><svg class="i"><use href="#i-x"/></svg></button>
+  <span class="sep"></span>
+  <select id="horas" title="Duração do modo manutenção"><option value="1">1 h</option><option value="2">2 h</option><option value="3" selected>3 h</option><option value="4">4 h</option></select>
+  <button data-acao="Pausar"><svg class="i"><use href="#i-chave"/></svg>Manutenção</button>
+  <button data-acao="Aplicar"><svg class="i"><use href="#i-cadeado"/></svg>Reativar</button>
+  <button data-acao="Mensagem"><svg class="i"><use href="#i-msg"/></svg>Mensagem</button>
+  <span class="sep"></span>
+  <button data-acao="Hibernar"><svg class="i"><use href="#i-lua"/></svg>Hibernar</button>
+  <button data-acao="Ligar"><svg class="i"><use href="#i-ligar"/></svg>Ligar</button>
+  <button data-acao="Reiniciar" class="perigo"><svg class="i"><use href="#i-reini"/></svg>Reiniciar</button>
+  <button data-acao="Desligar" class="perigo"><svg class="i"><use href="#i-power"/></svg>Desligar</button>
+</div>
+
+<dialog id="dlg">
+  <div class="dlg" id="dlg-box">
+    <div class="ic" id="dlg-ic"></div>
+    <h3 id="dlg-tit"></h3>
+    <div class="txt" id="dlg-txt"></div>
+    <textarea id="dlg-input" maxlength="250" style="display:none" placeholder="Escreva a mensagem que vai aparecer na tela…"></textarea>
+    <div class="alvos" id="dlg-alvos"></div>
+  </div>
+  <div class="bt"><button class="btn fant" id="dlg-nao">Cancelar</button><button class="btn prim" id="dlg-sim">Confirmar</button></div>
+</dialog>
+<div id="toast"></div>
+
+<script>
+/* ===== MODO DEMONSTRACAO (so no kit de design) =====
+   Simula o servidor do painel com dados de exemplo, para abrir este arquivo direto no Chrome.
+   No painel real este bloco NAO existe: os dados vem de /api/estado, /api/historico etc. */
+(function () {
+  const agora = new Date(), hh = agora.toTimeString().slice(0, 8);
+  const PCS = [
+    {nome:"Maquina 1", ip:"192.168.10.150", online:true,  logado:"CRJ MAQUINA 01", estado:"ATIVO desde 17/11/2026 18:12", bloqueio:"Enabled", boot:"18/11 13:55", visto:"18/11 15:40", horario_sync:true},
+    {nome:"Maquina 2", ip:"192.168.10.188", online:true,  logado:"CRJ MAQUINA 02", estado:"ATIVO desde 17/11/2026 18:11", bloqueio:"Enabled", boot:"18/11 13:55", visto:"18/11 15:40", horario_sync:true},
+    {nome:"Maquina 3", ip:"192.168.10.125", online:true,  logado:"CRJ MAQUINA 03", estado:"PAUSADO (manutencao) ate 18/11/2026 17:00", bloqueio:"AuditOnly", boot:"18/11 13:55", visto:"18/11 15:40", horario_sync:true},
+    {nome:"Maquina 4", ip:"192.168.10.126", online:true,  logado:"", estado:"ATIVO desde 17/11/2026 18:07", bloqueio:"Enabled", boot:"18/11 13:55", visto:"18/11 15:40", horario_sync:true},
+    {nome:"Maquina 5", ip:"192.168.10.140", online:false, logado:"", estado:"", bloqueio:"", boot:"", visto:"17/11 17:29", horario_sync:true},
+    {nome:"Maquina 6", ip:"192.168.10.154", online:true,  logado:"CRJ MAQUINA 06", estado:"ATIVO desde 17/11/2026 18:17", bloqueio:"Enabled", boot:"18/11 14:02", visto:"18/11 15:40", horario_sync:false},
+    {nome:"Maquina 8", ip:"192.168.10.146", online:true,  logado:"CRJ MAQUINA 08", estado:"ATIVO desde 17/11/2026 17:57", bloqueio:"Enabled", boot:"18/11 13:55", visto:"18/11 15:40", horario_sync:true},
+    {nome:"Maquina 10",ip:"192.168.10.134", online:true,  logado:"CRJ MAQUINA 10", estado:"ATIVO desde 17/11/2026 17:53", bloqueio:"Enabled", boot:"18/11 13:55", visto:"18/11 15:40", horario_sync:true}
+  ];
+  const PESQ = [
+    ["Maquina 8","CRJ_MAQUINA_08","Chrome","2026-11-18 15:31:10","como fazer curriculo","Google"],
+    ["Maquina 3","CRJ_MAQUINA_03","Chrome","2026-11-18 15:22:47","tutorial excel tabela","YouTube"],
+    ["Maquina 1","CRJ_MAQUINA_01","Edge","2026-11-18 15:10:03","vagas jovem aprendiz vitoria","Bing"],
+    ["Maquina 6","CRJ_MAQUINA_06","Chrome","2026-11-18 14:58:21","musica para estudar","YouTube"],
+    ["Maquina 2","CRJ_MAQUINA_02","Chrome","2026-11-18 14:40:55","enem 2026 inscricao","Google"],
+    ["Maquina 10","CRJ_MAQUINA_10","Chrome","2026-11-18 14:12:09","jogos de logica online","Google"]
+  ];
+  const SITES = [
+    ["Maquina 8","CRJ_MAQUINA_08","Chrome","2026-11-18 15:32:00","https://www.google.com/search?q=como+fazer+curriculo","como fazer curriculo - Pesquisa Google"],
+    ["Maquina 3","CRJ_MAQUINA_03","Chrome","2026-11-18 15:23:30","https://www.youtube.com/watch?v=exemplo","Tutorial Excel para iniciantes - YouTube"],
+    ["Maquina 1","CRJ_MAQUINA_01","Edge","2026-11-18 15:11:12","https://www.exemplo-vagas.com.br/jovem-aprendiz","Vagas Jovem Aprendiz"],
+    ["Maquina 2","CRJ_MAQUINA_02","Chrome","2026-11-18 14:41:40","https://www.gov.br/inep/enem","Enem - INEP"]
+  ];
+  let HOR = {ativo:true, abre:"14:00", fecha:"17:30", dias:["Monday","Tuesday","Wednesday","Thursday","Friday"]};
+  const resp = d => Promise.resolve({ json: () => Promise.resolve(JSON.parse(JSON.stringify(d))) });
+  window.fetch = function (url, opt) {
+    url = String(url);
+    if (url.startsWith("/api/estado")) return resp({pcs: PCS, atualizado: hh, horario: HOR, hist_atualizado: "18/11 15:30", hist_rodando: false});
+    if (url.startsWith("/api/historico/atualizar")) return resp({ok: true});
+    if (url.startsWith("/api/historico")) {
+      const q = new URLSearchParams(url.split("?")[1] || ""); let l = q.get("tipo") === "sites" ? SITES : PESQ;
+      if (q.get("pc")) l = l.filter(x => x[0] === q.get("pc"));
+      if (q.get("busca")) l = l.filter(x => (x[4] + " " + (x[5]||"")).toLowerCase().includes(q.get("busca").toLowerCase()));
+      return resp({linhas: l});
+    }
+    if (url.startsWith("/api/horario")) { HOR = JSON.parse(opt.body); return resp({ok: true}); }
+    if (url.startsWith("/api/acao")) { const b = JSON.parse(opt.body); return resp({resultados: b.ips.map(ip => ({ip, ok: true, msg: "(demonstracao)"}))}); }
+    return resp({});
+  };
+})();
+</script>
+<script>
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const ic = n => `<svg class="i"><use href="#i-${n}"/></svg>`;
+let PCS = [], SEL = new Set(), HOR = null, FILTRO = "", LINHAS = [];
+const DIAS = [["Monday","Seg"],["Tuesday","Ter"],["Wednesday","Qua"],["Thursday","Qui"],["Friday","Sex"],["Saturday","Sáb"],["Sunday","Dom"]];
+function esc(s) { return String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function toast(msg, tipo="") {
+  const d = document.createElement("div"); d.className = "t " + tipo;
+  d.innerHTML = ic(tipo === "erro" ? "alerta" : tipo === "ok" ? "check" : "sino") + `<span>${esc(msg)}</span>`;
+  $("#toast").appendChild(d); setTimeout(() => d.remove(), 6000);
+}
+async function post(url, corpo) {
+  const r = await fetch(url, {method:"POST", headers:{"Content-Type":"application/json","X-CRJ":"1"}, body: JSON.stringify(corpo)});
+  return r.json();
+}
+
+// ---------- tema
+function aplicarTema(t) {
+  document.documentElement.dataset.tema = t; localStorage.setItem("crj-tema", t);
+  $("#tema").innerHTML = t === "escuro" ? `${ic("sol")}<span>Modo claro</span>` : `${ic("lua")}<span>Modo escuro</span>`;
+}
+$("#tema").onclick = () => aplicarTema(document.documentElement.dataset.tema === "escuro" ? "claro" : "escuro");
+aplicarTema(localStorage.getItem("crj-tema") || "claro");
+
+// ---------- navegação
+$$(".menu button").forEach(b => b.onclick = () => {
+  $$(".menu button").forEach(x => x.classList.toggle("ativo", x === b));
+  $$(".aba").forEach(a => a.classList.toggle("ativo", a.id === "aba-" + b.dataset.aba));
+  $("#acoes").classList.toggle("on", b.dataset.aba === "maquinas" && SEL.size > 0);
+  if (b.dataset.aba === "historico") carregarHistorico();
+});
+
+// ---------- máquinas
+function situacao(p) {
+  if (!p.online) return "off";
+  if ((p.estado || "").startsWith("PAUSADO")) return "manut";
+  if (p.bloqueio === "Enabled") return "bloq";
+  return "crit";
+}
+function seloHTML(p, s) {
+  if (s === "off") return `<span class="selo s-off">${ic("lua")}Desligada / hibernando</span>`;
+  if (s === "manut") { const m = (p.estado || "").match(/(\d\d:\d\d)\s*$/); return `<span class="selo s-manut">${ic("chave")}Manutenção${m ? " até " + m[1] : ""}</span>`; }
+  if (s === "bloq") return `<span class="selo s-bloq">${ic("cadeado")}Bloqueada</span>`;
+  return `<span class="selo s-crit">${ic("alerta")}Verificar bloqueio</span>`;
+}
+const COR = {bloq: ["var(--good-soft)", "var(--good-ink)", "var(--good)"], manut: ["var(--warn-soft)", "var(--warn-ink)", "var(--warn)"],
+             off: ["var(--off-soft)", "var(--off-ink)", "var(--off)"], crit: ["var(--crit-soft)", "var(--crit-ink)", "var(--crit)"]};
+function desenhar() {
+  const lista = PCS.filter(p => !FILTRO || (FILTRO === "on" ? p.online : situacao(p) === FILTRO));
+  const titulos = {"": "Todas as máquinas", on: "Máquinas ligadas", bloq: "Máquinas bloqueadas", manut: "Em manutenção", off: "Desligadas ou hibernando"};
+  $("#g-titulo").textContent = titulos[FILTRO];
+  $$(".tile").forEach(t => t.classList.toggle("filtro", t.dataset.filtro === FILTRO));
+  $("#grade").innerHTML = lista.map(p => {
+    const s = situacao(p), [bg, fg, led] = COR[s];
+    return `<div class="pc ${SEL.has(p.ip) ? "marcado" : ""} ${s === "off" ? "desl" : ""}" data-ip="${p.ip}">
+      <div class="topo">
+        <div class="monitor" style="background:${bg};color:${fg}">${ic("monitor")}<span class="led" style="background:${p.online ? "var(--good)" : "var(--off)"}"></span></div>
+        <div><div class="nome">${esc(p.nome.replace("Maquina", "Máquina"))}</div><div class="ip">${esc(p.ip)}</div></div>
+        <div class="check">${ic("check")}</div>
+      </div>
+      ${seloHTML(p, s)}
+      <dl class="dados">
+        <dt>${ic("user")}Usuário</dt><dd class="${p.online && p.logado ? "" : "fraco"}">${p.online ? esc(p.logado || "ninguém logado") : "—"}</dd>
+        <dt>${ic("power")}Ligada</dt><dd class="${p.online ? "" : "fraco"}">${p.online ? esc(p.boot) : "—"}</dd>
+        <dt>${ic("relogio")}Último sinal</dt><dd class="fraco">${esc(p.visto || "—")}</dd>
+        ${HOR && HOR.ativo ? `<dt>${ic("sino")}Horário</dt><dd class="${p.horario_sync ? "fraco" : ""}" style="${p.horario_sync ? "" : "color:var(--warn-ink)"}">${p.horario_sync ? "aplicado" : "pendente"}</dd>` : ""}
+      </dl>
+    </div>`;
+  }).join("") || `<div class="vazio">${ic("monitor")}${PCS.length ? "Nenhuma máquina nesta situação." : "Carregando máquinas…"}</div>`;
+  $$(".pc").forEach(c => c.onclick = () => { const ip = c.dataset.ip; SEL.has(ip) ? SEL.delete(ip) : SEL.add(ip); desenhar(); });
+  const n = SEL.size;
+  $("#selinfo").textContent = `${n} selecionada${n !== 1 ? "s" : ""}`;
+  $("#acoes").classList.toggle("on", n > 0 && $("#aba-maquinas").classList.contains("ativo"));
+  const todasVis = lista.length && lista.every(p => SEL.has(p.ip));
+  $("#todas span").textContent = todasVis ? "Limpar seleção" : "Selecionar todas";
+}
+$("#todas").onclick = () => {
+  const lista = PCS.filter(p => !FILTRO || (FILTRO === "on" ? p.online : situacao(p) === FILTRO));
+  if (lista.every(p => SEL.has(p.ip))) lista.forEach(p => SEL.delete(p.ip)); else lista.forEach(p => SEL.add(p.ip));
+  desenhar();
+};
+$("#limpar").onclick = () => { SEL.clear(); desenhar(); };
+$$(".tile").forEach(t => t.onclick = () => { FILTRO = FILTRO === t.dataset.filtro ? "" : t.dataset.filtro; desenhar(); });
+
+async function atualizar() {
+  try {
+    const r = await (await fetch("/api/estado")).json();
+    PCS = r.pcs; HOR = r.horario;
+    const c = s => PCS.filter(p => situacao(p) === s).length;
+    $("#r-on").textContent = PCS.filter(p => p.online).length; $("#r-bloq").textContent = c("bloq");
+    $("#r-manut").textContent = c("manut"); $("#r-off").textContent = c("off");
+    $("#m-cont").textContent = PCS.length;
+    $("#atualizado").textContent = `Atualizado às ${(r.atualizado || "…").slice(0, 5)}`; $("#vivo").classList.remove("erro");
+    const crit = c("crit");
+    $("#saud").innerHTML = crit ? `<span style="color:var(--crit-ink)">⚠ ${crit} máquina(s) com o bloqueio desligado sem manutenção — verifique.</span>` : "Visão geral da sala de informática";
+    $("#h-info").textContent = r.hist_rodando ? "Coletando histórico das máquinas…" : (r.hist_atualizado ? `Histórico do Chrome e do Edge · última coleta ${r.hist_atualizado}` : "Histórico do Chrome e do Edge · ainda sem coleta");
+    if (!$("#h-pc").dataset.ok && PCS.length) { $("#h-pc").innerHTML += PCS.map(p => `<option value="${esc(p.nome)}">${esc(p.nome.replace("Maquina", "Máquina"))}</option>`).join(""); $("#h-pc").dataset.ok = 1; }
+    if (!$("#hr-abre").dataset.ok) preencherHorario();
+    statusHorario();
+    desenhar();
+  } catch (e) { $("#atualizado").textContent = "Sem conexão com o painel"; $("#vivo").classList.add("erro"); }
+}
+
+// ---------- diálogo
+function confirmar({tit, txt, icone = "sino", perigo = false, comInput = false, botao = "Confirmar"}) {
+  return new Promise(ok => {
+    $("#dlg-box").classList.toggle("perigo", perigo);
+    $("#dlg-ic").innerHTML = ic(icone); $("#dlg-tit").textContent = tit; $("#dlg-txt").innerHTML = txt;
+    $("#dlg-alvos").innerHTML = PCS.filter(p => SEL.has(p.ip)).map(p => `<span class="tag">${ic("monitor")}${esc(p.nome.replace("Maquina", "Máquina"))}</span>`).join("");
+    const inp = $("#dlg-input"); inp.style.display = comInput ? "block" : "none"; inp.value = "";
+    $("#dlg-sim").textContent = botao; $("#dlg-sim").classList.toggle("perigo", perigo);
+    $("#dlg").showModal(); if (comInput) inp.focus();
+    $("#dlg-sim").onclick = () => { $("#dlg").close(); ok(comInput ? (inp.value.trim() || null) : true); };
+    $("#dlg-nao").onclick = () => { $("#dlg").close(); ok(null); };
+  });
+}
+const ACOES = {
+  Pausar:   {tit: "Ligar o modo manutenção", icone: "chave", botao: "Ligar manutenção", txt: h => `As restrições vão ser <b>desligadas por ${h} h</b> para você instalar ou ajustar o que precisar. Depois disso, voltam sozinhas.`},
+  Aplicar:  {tit: "Reativar o bloqueio", icone: "cadeado", botao: "Reativar", txt: () => "Todas as restrições voltam a valer agora nas máquinas selecionadas."},
+  Hibernar: {tit: "Hibernar máquinas", icone: "lua", botao: "Hibernar", txt: () => "As máquinas <b>desligam em 5 segundos</b>, guardando o que estava aberto. Elas ligam sozinhas no próximo horário de abertura."},
+  Ligar:    {tit: "Ligar máquinas", icone: "ligar", botao: "Enviar sinal", txt: () => "Vou enviar o sinal de ligar pela rede (Wake-on-LAN). <b>Atenção: ainda não funciona nestas placas</b>, só depois de ativarmos o recurso no driver e na BIOS."},
+  Reiniciar:{tit: "Reiniciar máquinas", icone: "reini", botao: "Reiniciar", perigo: true, txt: () => "Os alunos verão um aviso e as máquinas <b>reiniciam em 1 minuto</b>."},
+  Desligar: {tit: "Desligar máquinas", icone: "power", botao: "Desligar", perigo: true, txt: () => "As máquinas <b>desligam em 1 minuto</b>. Desligadas assim, <b>elas não ligam sozinhas</b> no horário de abertura. Para o dia a dia, prefira <b>Hibernar</b>."},
+};
+const NOMES = {Pausar: "Modo manutenção", Aplicar: "Reativar bloqueio", Mensagem: "Mensagem", Hibernar: "Hibernar", Ligar: "Ligar", Reiniciar: "Reiniciar", Desligar: "Desligar"};
+$$("[data-acao]").forEach(b => b.onclick = async () => {
+  const acao = b.dataset.acao, ips = [...SEL]; if (!ips.length) return;
+  const corpo = {acao, ips};
+  if (acao === "Mensagem") {
+    const t = await confirmar({tit: "Mensagem para a tela dos alunos", icone: "msg", botao: "Enviar", comInput: true, txt: "A mensagem aparece numa janela na tela das máquinas selecionadas."});
+    if (!t) return; corpo.texto = t;
+  } else {
+    const a = ACOES[acao]; if (acao === "Pausar") corpo.horas = +$("#horas").value;
+    if (!await confirmar({...a, txt: a.txt(corpo.horas)})) return;
+  }
+  toast(`${NOMES[acao]}: enviando para ${ips.length} máquina(s)…`);
+  try {
+    const r = await post("/api/acao", corpo);
+    const ok = (r.resultados || []).filter(x => x.ok).length, falhas = ips.length - ok;
+    toast(`${NOMES[acao]}: ${ok} ok${falhas ? `, ${falhas} sem resposta (desligada?)` : ""}`, falhas && !ok ? "erro" : "ok");
+    if (["Hibernar", "Reiniciar", "Desligar"].includes(acao)) SEL.clear();
+  } catch (e) { toast("Erro ao executar: " + e, "erro"); }
+  setTimeout(atualizar, 3000);
+});
+
+// ---------- histórico
+const segm = id => $(`#${id} .ativo`).dataset.v;
+$$(".segm").forEach(g => g.querySelectorAll("button").forEach(b => b.onclick = () => {
+  g.querySelectorAll("button").forEach(x => x.classList.toggle("ativo", x === b)); carregarHistorico();
+}));
+function tagOnde(o) { const c = o === "YouTube" ? "yt" : o === "Google" ? "gg" : o === "Bing" ? "bg" : ""; return `<span class="tag ${c}">${esc(o || "Busca")}</span>`; }
+function fmt(s) { const [d, h] = (s || " ").split(" "); const [a, m, dd] = d.split("-"); return `${dd}/${m} · ${(h || "").slice(0, 5)}`; }
+async function carregarHistorico() {
+  const tipo = segm("h-tipo");
+  const q = new URLSearchParams({tipo, pc: $("#h-pc").value, dias: segm("h-dias"), busca: $("#h-busca").value});
+  const r = await (await fetch("/api/historico?" + q)).json();
+  LINHAS = r.linhas || [];
+  $("#h-rank-box").style.display = tipo === "pesquisas" ? "" : "none";
+  $(".hist").style.gridTemplateColumns = tipo === "pesquisas" ? "" : "1fr";
+  if (!LINHAS.length) { $("#h-tabela").innerHTML = `<div class="vazio">${ic("busca")}Nada encontrado neste período.</div>`; $("#h-rank").innerHTML = ""; return; }
+  const maq = n => esc((n || "").replace("Maquina", "Máquina"));
+  $("#h-tabela").innerHTML = tipo === "pesquisas"
+    ? `<table><thead><tr><th>Quando</th><th>Máquina</th><th>Pesquisa</th><th>Onde</th><th>Navegador</th></tr></thead><tbody>${LINHAS.map(l =>
+        `<tr><td class="quando">${fmt(l[3])}</td><td>${maq(l[0])}</td><td class="termo">${esc(l[4])}</td><td>${tagOnde(l[5])}</td><td><span class="tag">${esc(l[2])}</span></td></tr>`).join("")}</tbody></table>`
+    : `<table><thead><tr><th>Quando</th><th>Máquina</th><th>Página</th><th>Endereço</th><th>Navegador</th></tr></thead><tbody>${LINHAS.map(l =>
+        `<tr><td class="quando">${fmt(l[3])}</td><td>${maq(l[0])}</td><td>${esc(l[5])}</td><td class="url"><a href="${esc(l[4])}" target="_blank" rel="noopener noreferrer" title="${esc(l[4])}">${esc(l[4])}</a></td><td><span class="tag">${esc(l[2])}</span></td></tr>`).join("")}</tbody></table>`;
+  if (tipo === "pesquisas") {
+    const cont = {}; LINHAS.forEach(l => { const t = (l[4] || "").toLowerCase().trim(); if (t) cont[t] = (cont[t] || 0) + 1; });
+    const top = Object.entries(cont).sort((a, b) => b[1] - a[1]).slice(0, 12), max = top.length ? top[0][1] : 1;
+    $("#h-rank").innerHTML = top.map(([t, n]) => `<div class="rk" data-t="${esc(t)}" title="Filtrar por “${esc(t)}”"><span class="rk-t">${esc(t)}</span><span class="rk-n">${n}×</span><span class="rk-b"><i style="width:${Math.max(6, n / max * 100)}%"></i></span></div>`).join("");
+    $$(".rk").forEach(e => e.onclick = () => { $("#h-busca").value = e.dataset.t; carregarHistorico(); });
+  }
+}
+let tBusca; $("#h-busca").oninput = () => { clearTimeout(tBusca); tBusca = setTimeout(carregarHistorico, 350); };
+$("#h-pc").onchange = carregarHistorico;
+$("#h-coletar").onclick = async () => { await post("/api/historico/atualizar", {}); toast("Coletando o histórico das máquinas ligadas… leva até 1 minuto."); setTimeout(() => { atualizar(); carregarHistorico(); }, 45000); };
+
+// ---------- horário
+$("#hr-dias").innerHTML = DIAS.map(([v, t]) => `<label><input type="checkbox" value="${v}">${t}</label>`).join("");
+function menos5(h) { if (!h) return "--:--"; const [a, b] = h.split(":").map(Number); const t = a * 60 + b - 5; return `${String(Math.floor(t / 60)).padStart(2, "0")}:${String(t % 60).padStart(2, "0")}`; }
+function linhaTempo() {
+  const abre = $("#hr-abre").value, fecha = $("#hr-fecha").value, ativo = $("#hr-ativo").checked;
+  $("#hr-chave-tx").textContent = ativo ? "Ligado: as máquinas seguem o horário abaixo" : "Desligado: as máquinas não desligam sozinhas";
+  const passos = [
+    [menos5(abre), "play", "var(--accent-soft)", "var(--accent)", "As máquinas ligam sozinhas", "Despertador interno de cada PC"],
+    [abre, "check", "var(--good-soft)", "var(--good-ink)", "Sala aberta", "Uso normal, com o bloqueio ligado"],
+    [menos5(fecha), "sino", "var(--warn-soft)", "var(--warn-ink)", "Aviso na tela", "“A informática fecha em 5 minutos”"],
+    [fecha, "lua", "var(--off-soft)", "var(--off-ink)", "Máquinas hibernam", "Desligam guardando tudo o que estava aberto"],
+  ];
+  $("#hr-linha").innerHTML = passos.map((p, i) => `<div class="passo" style="${ativo ? "" : "opacity:.45"}"><div class="h">${p[0]}</div>
+    <div class="eixo"><div class="bol" style="background:${p[2]};color:${p[3]}">${ic(p[1])}</div>${i < passos.length - 1 ? '<div class="fio"></div>' : ""}</div>
+    <div class="tx"><b>${p[4]}</b><span>${p[5]}</span></div></div>`).join("");
+}
+["#hr-abre", "#hr-fecha", "#hr-ativo"].forEach(s => $(s).addEventListener("input", linhaTempo));
+function preencherHorario() {
+  if (!HOR) return;
+  $("#hr-ativo").checked = HOR.ativo; $("#hr-abre").value = HOR.abre; $("#hr-fecha").value = HOR.fecha;
+  $$("#hr-dias input").forEach(i => i.checked = HOR.dias.includes(i.value));
+  $("#hr-abre").dataset.ok = 1; linhaTempo();
+}
+function statusHorario() {
+  if (!HOR) return;
+  if (!HOR.ativo) { $("#hr-status").innerHTML = `${ic("lua")}Controle de horário desligado.`; return; }
+  const pend = PCS.filter(p => !p.horario_sync).map(p => p.nome.replace("Maquina", "Máquina"));
+  $("#hr-status").innerHTML = pend.length
+    ? `${ic("relogio")}<span>Aplicado em ${PCS.length - pend.length} de ${PCS.length}. Pendentes (atualizam quando ligarem): <b>${esc(pend.join(", "))}</b></span>`
+    : `${ic("check")}<span>Aplicado em todas as ${PCS.length} máquinas.</span>`;
+}
+$("#hr-salvar").onclick = async () => {
+  const corpo = {ativo: $("#hr-ativo").checked, abre: $("#hr-abre").value, fecha: $("#hr-fecha").value, dias: $$("#hr-dias input:checked").map(i => i.value)};
+  if (corpo.ativo && (!corpo.abre || !corpo.fecha || !corpo.dias.length)) return toast("Preencha o horário e os dias.", "erro");
+  const r = await post("/api/horario", corpo);
+  if (r.ok) { toast("Horário salvo. Aplicando nas máquinas ligadas…", "ok"); setTimeout(atualizar, 20000); } else toast(r.erro || "Erro", "erro");
+};
+
+atualizar(); setInterval(atualizar, 10000);
+</script>
+</body>
+</html>

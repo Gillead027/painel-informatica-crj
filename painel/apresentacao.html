@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apresentação · Painel da Informática · CRJ Flexal</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%23f2b705'/%3E%3Cpath d='M6 7h12v8H6z M9 18h6' stroke='%2317191b' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root { --bg:#08090a; --surface:#0f1011; --elev:#161718; --line:#23252a; --line-strong:#383b3f; --ink:#eeeff1; --ink-2:#b4b8bf; --muted:#8a8f98; --faint:#62666d; --amarelo:#f2b705; --good:#4cc38a; --crit:#f07068;
+  --ease:cubic-bezier(.2,0,0,1); --spring:cubic-bezier(.34,1.56,.64,1); color-scheme: dark; }
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { background: var(--bg); color: var(--ink); font: 400 16px/1.5 "Inter", "Segoe UI", system-ui, sans-serif; font-feature-settings: "cv01","ss03"; -webkit-font-smoothing: antialiased; overflow: hidden; user-select: none; }
+body::before { content: ""; position: fixed; inset: -20%; pointer-events: none; background: radial-gradient(30% 28% at 18% 12%, rgba(242,183,5,.07), transparent 70%), radial-gradient(26% 24% at 90% 92%, rgba(255,255,255,.03), transparent 70%); animation: nuvens 30s ease-in-out infinite alternate; }
+@keyframes nuvens { to { transform: translate(3%, -2%) scale(1.05); } }
+.palco { position: fixed; inset: 0; }
+.slide { position: absolute; inset: 0; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 8fr); gap: 4vw; align-items: center; padding: 7vh 5vw 9vh; opacity: 0; pointer-events: none; }
+.slide.so-texto { grid-template-columns: minmax(0, 1fr); max-width: 1200px; margin: 0 auto; }
+.slide.ativo { opacity: 1; pointer-events: auto; }
+.slide .txt > * { opacity: 0; transform: translateY(14px); transition: opacity .5s var(--ease), transform .6s var(--ease); }
+.slide.ativo .txt > * { opacity: 1; transform: none; }
+.slide.ativo .txt > *:nth-child(2) { transition-delay: .06s; } .slide.ativo .txt > *:nth-child(3) { transition-delay: .12s; } .slide.ativo .txt > *:nth-child(4) { transition-delay: .18s; } .slide.ativo .txt > *:nth-child(5) { transition-delay: .24s; } .slide.ativo .txt > *:nth-child(6) { transition-delay: .3s; }
+.kicker { display: inline-flex; align-items: center; gap: 10px; font: 500 13px "JetBrains Mono", monospace; color: var(--amarelo); letter-spacing: .02em; margin-bottom: 18px; }
+.kicker i { width: 22px; height: 1px; background: var(--amarelo); }
+h1, h2 { margin: 0; font-weight: 600; letter-spacing: -.035em; text-wrap: balance; }
+h1 { font-size: clamp(40px, 5.6vw, 84px); line-height: 1.02; }
+h2 { font-size: clamp(30px, 3.4vw, 52px); line-height: 1.08; }
+h1 em, h2 em { font-style: normal; color: var(--amarelo); }
+.lead { margin: 20px 0 0; font-size: clamp(16px, 1.35vw, 21px); color: var(--ink-2); line-height: 1.55; max-width: 46ch; text-wrap: pretty; }
+ul.pontos { list-style: none; margin: 26px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+ul.pontos li { display: grid; grid-template-columns: 26px 1fr; gap: 10px; font-size: clamp(14px, 1.15vw, 17px); color: var(--ink-2); line-height: 1.5; }
+ul.pontos li b { color: var(--ink); font-weight: 600; }
+ul.pontos li::before { content: ""; width: 18px; height: 18px; margin-top: 3px; border-radius: 5px; background: rgba(242,183,5,.12) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m6 12 4 4 8-9' stroke='%23f2b705' stroke-width='2.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/12px no-repeat; border: 1px solid rgba(242,183,5,.35); }
+ul.pontos.x li::before { background-color: rgba(240,112,104,.1); border-color: rgba(240,112,104,.35); background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 7l10 10M17 7 7 17' stroke='%23f07068' stroke-width='2.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); }
+/* janela com o print */
+.janela { position: relative; border-radius: 12px; border: 1px solid var(--line-strong); background: var(--surface); box-shadow: 0 30px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.03); overflow: hidden; opacity: 0; transform: translateY(24px) scale(.97); transition: opacity .7s var(--ease) .1s, transform .9s var(--spring) .1s; }
+.slide.ativo .janela { opacity: 1; transform: none; }
+.janela .barra { display: flex; align-items: center; gap: 7px; height: 32px; padding: 0 12px; border-bottom: 1px solid var(--line); background: var(--elev); }
+.janela .barra i { width: 10px; height: 10px; border-radius: 50%; background: var(--line-strong); }
+.janela .barra span { margin-left: 10px; font: 500 11.5px "JetBrains Mono", monospace; color: var(--faint); }
+.janela img { display: block; width: 100%; height: auto; }
+.slide.ativo .janela img { animation: zoom 18s ease-in-out forwards; transform-origin: 30% 30%; } @keyframes zoom { to { transform: scale(1.04); } }
+.inset { position: absolute; right: -2%; bottom: -6%; width: 42%; border-radius: 10px; border: 1px solid var(--line-strong); box-shadow: 0 20px 50px rgba(0,0,0,.7); overflow: hidden; opacity: 0; transform: translateY(30px) rotate(2deg); transition: opacity .6s var(--ease) .5s, transform .9s var(--spring) .5s; }
+.slide.ativo .inset { opacity: 1; transform: rotate(-1.5deg); } .inset img { display: block; width: 100%; }
+.inset.cel { width: 22%; right: -1%; bottom: -10%; aspect-ratio: 390 / 844; border-radius: 26px; border: 6px solid #1c1d1f; background: #000; }
+.inset.cel img { width: 128.2%; max-width: none; height: 100%; object-fit: cover; object-position: left top; }
+.midia { position: relative; }
+.selo-ex { position: absolute; top: 44px; right: 12px; z-index: 2; font: 500 11px "JetBrains Mono", monospace; color: var(--amarelo); background: rgba(8,9,10,.85); border: 1px solid rgba(242,183,5,.4); padding: 4px 8px; border-radius: 6px; }
+/* números grandes */
+.numeros { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-top: 40px; }
+.num { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); padding: 22px 22px 18px; position: relative; overflow: hidden; }
+.num::after { content: ""; position: absolute; right: -30px; top: -30px; width: 100px; height: 100px; border-radius: 50%; background: rgba(242,183,5,.08); }
+.num b { display: block; font: 600 clamp(32px, 3.4vw, 54px)/1 "Inter"; letter-spacing: -.04em; } .num b em { font-style: normal; color: var(--amarelo); }
+.num span { display: block; margin-top: 10px; color: var(--muted); font-size: 14px; }
+.duas { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 34px; }
+.bloco { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); padding: 22px; }
+.bloco h3 { margin: 0 0 6px; font-size: 18px; font-weight: 600; letter-spacing: -.01em; display: flex; align-items: center; gap: 10px; }
+.bloco h3 .bol { width: 8px; height: 8px; border-radius: 50%; background: var(--crit); } .bloco.bom h3 .bol { background: var(--good); }
+.bloco ul.pontos { margin-top: 14px; }
+.capa-logo { width: 64px; height: 64px; border-radius: 16px; background: var(--amarelo); display: grid; place-items: center; margin-bottom: 30px; box-shadow: 0 0 0 1px rgba(255,255,255,.12) inset, 0 16px 44px rgba(242,183,5,.3); }
+.capa-logo svg { width: 30px; height: 30px; stroke: #0b0b0b; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.autor { margin-top: 36px; display: flex; gap: 22px; font-size: 14px; color: var(--muted); } .autor b { color: var(--ink); font-weight: 500; }
+/* navegação */
+.progresso { position: fixed; left: 0; top: 0; height: 2px; background: var(--amarelo); box-shadow: 0 0 10px var(--amarelo); transition: width .5s var(--ease); z-index: 5; }
+.rodape { position: fixed; left: 5vw; right: 5vw; bottom: 3vh; display: flex; align-items: center; gap: 16px; font-size: 12.5px; color: var(--faint); z-index: 5; }
+.rodape .marca { display: flex; align-items: center; gap: 8px; color: var(--muted); } .rodape .marca i { width: 8px; height: 8px; border-radius: 2px; background: var(--amarelo); }
+.pontinhos { display: flex; gap: 6px; margin: 0 auto; }
+.pontinhos button { width: 7px; height: 7px; padding: 0; border: 0; border-radius: 99px; background: var(--line-strong); cursor: pointer; transition: width .3s var(--spring), background .2s; }
+.pontinhos button.ativo { width: 22px; background: var(--amarelo); } .pontinhos button:hover { background: var(--muted); }
+.cont { font: 500 12.5px "JetBrains Mono", monospace; color: var(--muted); }
+kbd { display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; padding: 0 5px; border: 1px solid var(--line-strong); border-bottom-width: 2px; border-radius: 4px; font: 500 11px "JetBrains Mono", monospace; color: var(--muted); background: var(--elev); }
+.setas { display: flex; gap: 6px; } .setas button { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface); color: var(--ink-2); cursor: pointer; display: grid; place-items: center; transition: border-color .12s, transform .2s var(--spring); }
+.setas button:hover { border-color: var(--line-strong); color: var(--ink); } .setas button:active { transform: scale(.93); }
+.setas svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.dica-f { display: flex; align-items: center; gap: 6px; }
+@media (max-width: 1000px) { .slide { grid-template-columns: 1fr; align-content: center; gap: 4vh; } .numeros { grid-template-columns: repeat(2, 1fr); } .dica-f { display: none; } }
+@media (prefers-reduced-motion: reduce) { *, *::before { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="progresso" id="prog"></div>
+<div class="palco" id="palco">
+
+  <section class="slide so-texto">
+    <div class="txt">
+      <div class="capa-logo"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></div>
+      <div class="kicker"><i></i>CRJ FLEXAL · SALA DE INFORMÁTICA</div>
+      <h1>A sala inteira sob controle,<br><em>de um só lugar.</em></h1>
+      <p class="lead">O Painel da Informática cuida das máquinas dos alunos sozinho: protege, liga, desliga, mantém e mostra o que acontece. Tudo a partir do PC do estúdio, sem custo nenhum.</p>
+      <div class="autor"><span>Apresentado por <b>Gillead</b>, educador</span><span>9 máquinas · rede da sala</span></div>
+    </div>
+  </section>
+
+  <section class="slide so-texto">
+    <div class="txt">
+      <div class="kicker"><i></i>01 · O PROBLEMA</div>
+      <h2>Antes, cada máquina era <em>um problema separado.</em></h2>
+      <div class="duas">
+        <div class="bloco"><h3><span class="bol"></span>Como era</h3>
+          <ul class="pontos x">
+            <li><span>Alunos <b>instalavam programas e jogos</b>, deixando as máquinas lentas e expostas a vírus.</span></li>
+            <li><span>Ligar, desligar e configurar era <b>uma por uma</b>, na mão.</span></li>
+            <li><span>Não dava para saber <b>o que estava sendo pesquisado</b>.</span></li>
+            <li><span>Máquina com defeito continuava sendo usada.</span></li>
+          </ul></div>
+        <div class="bloco bom"><h3><span class="bol"></span>Como ficou</h3>
+          <ul class="pontos">
+            <li><span>Instalação <b>bloqueada</b> para alunos. Jogos já instalados continuam funcionando.</span></li>
+            <li><span>Qualquer ação em <b>todas as máquinas de uma vez</b>, com progresso na tela.</span></li>
+            <li><span>Histórico de pesquisas com <b>palavras de alerta</b>.</span></li>
+            <li><span>Horário, manutenção e imagens <b>automáticos</b>.</span></li>
+          </ul></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="txt">
+      <div class="kicker"><i></i>02 · O PAINEL</div>
+      <h2>Todas as máquinas <em>numa tela só.</em></h2>
+      <p class="lead">Cada cartão mostra se a máquina está ligada, bloqueada, em manutenção ou com defeito, quem está usando e quando deu o último sinal. Atualiza sozinho a cada 10 segundos.</p>
+      <ul class="pontos">
+        <li><span><b>Filtros</b> por situação, com a contagem de cada uma</span></li>
+        <li><span>Visualização em <b>grade ou lista</b></span></li>
+        <li><span>Tema <b>escuro e claro</b>; abre como um programa no estúdio</span></li>
+      </ul>
+    </div>
+    <div class="midia"><div class="janela"><div class="barra"><i></i><i></i><i></i><span>Painel da Informática · Máquinas</span></div><img src="/apresentacao/maquinas.png" alt="Tela de máquinas do painel"></div></div>
+  </section>
+
+  <section class="slide">
+    <div class="txt">
+      <div class="kicker"><i></i>03 · PROTEÇÃO</div>
+      <h2>Aluno usa. <em>Não instala.</em></h2>
+      <p class="lead">As contas dos alunos são de usuário comum e o Windows bloqueia qualquer instalação. Quem tenta vê um aviso para procurar o educador.</p>
+      <ul class="pontos">
+        <li><span>Bloqueio pelo próprio Windows (<b>AppLocker</b>) e regras no Chrome e no Edge</span></li>
+        <li><span><b>Roblox e jogos já instalados</b> continuam abrindo e atualizando</span></li>
+        <li><span><b>Modo manutenção</b>: libera por 1 a 4 horas para o educador instalar e volta sozinho</span></li>
+        <li><span>O selo verde “Bloqueada” confirma que a proteção está ativa</span></li>
+      </ul>
+    </div>
+    <div class="midia"><div class="janela"><div class="barra"><i></i><i></i><i></i><span>Tema claro</span></div><img src="/apresentacao/claro.png" alt="Painel no tema claro"></div></div>
+  </section>
+
+  <section class="slide">
+    <div class="txt">
+      <div class="kicker"><i></i>04 · AÇÕES EM MASSA</div>
+      <h2>Selecionou, clicou, <em>foi para todas.</em></h2>
+      <p class="lead">Escolha as máquinas e use a barra de ações: o progresso aparece em tempo real, máquina por máquina. Quando tudo dá certo, sobe confete.</p>
+      <ul class="pontos">
+        <li><span><b>Ligar pela rede</b>, hibernar, reiniciar e desligar</span></li>
+        <li><span><b>Mensagem</b> na tela dos alunos e <b>bloquear tela</b></span></li>
+        <li><span>Atalhos de teclado: <kbd>H</kbd> hibernar, <kbd>B</kbd> bloquear, <kbd>M</kbd> mensagem</span></li>
+      </ul>
+    </div>
+    <div class="midia"><div class="janela"><div class="barra"><i></i><i></i><i></i><span>Progresso por máquina</span></div><img src="/apresentacao/progresso.png" alt="Cartão de progresso das ações"></div></div>
+  </section>
+
+  <section class="slide">
+    <div class="txt">
+      <div class="kicker"><i></i>05 · SEM SUSTO</div>
+      <h2>Ações sérias pedem <em>confirmação.</em></h2>
+      <p class="lead">Desligar, reiniciar, desinstalar, apagar fotos e o modo defeito só acontecem se você <b>segurar o botão</b> por um instante. Clique sem querer não faz nada.</p>
+      <ul class="pontos">
+        <li><span>A janela mostra <b>exatamente quais máquinas</b> serão afetadas</span></li>
+        <li><span>Tudo fica <b>registrado</b> no histórico de ações do painel</span></li>
+      </ul>
+    </div>
+    <div class="midia"><div class="janela"><div class="barra"><i></i><i></i><i></i><span>Segure para confirmar</span></div><img src="/apresentacao/confirmar.png" alt="Confirmação segurando o botão"></div></div>
+  </section>
+
+  <section class="slide">
+    <div class="txt">
+      <div class="kicker"><i></i>06 · MODO DEFEITO</div>
+      <h2>Máquina com problema <em>sai de uso</em> na hora.</h2>
+      <p class="lead">Um clique marca a máquina como “com defeito”: a tela mostra o aviso para o aluno procurar outra máquina ou o educador, e a conta do aluno fica desativada até liberar.</p>
+      <ul class="pontos">
+        <li><span>O aviso aparece na <b>tela de bloqueio</b> e antes do login</span></li>
+        <li><span>“Liberar máquina” desfaz tudo com um clique</span></li>
+      </ul>
+    </div>
+    <div class="midia"><div class="janela"><div class="barra"><i></i><i></i><i></i><span>Máquina 1 marcada com defeito</span></div><img src="/apresentacao/defeito.png" alt="Painel com uma máquina em modo defeito"></div>
+      <div class="inset"><img src="/apresentacao/tela-defeito.jpg" alt="Tela que o aluno vê"></div></div>
+  </section>
+
+  <section class="slide">
+    <div class="txt">
+      <div class="kicker"><i></i>07 · HORÁRIO AUTOMÁTICO</div>
+      <h2>A sala abre e fecha <em>sozinha.</em></h2>
+      <p class="lead">Cada dia tem seu horário. As máquinas ligam sozinhas, avisam os alunos antes de fechar e hibernam guardando o que estava aberto. Funciona mesmo com o estúdio desligado.</p>
+      <ul class="pontos">
+        <li><span><b>5 min antes de abrir</b>: as máquinas ligam</span></li>
+        <li><span><b>5 min antes de fechar</b>: aviso na tela</span></li>
+        <li><span><b>No horário</b>: hibernam (menos as que estão em manutenção)</span></li>
+      </ul>
+    </div>
+    <div class="midia"><div class="janela"><div class="barra"><i></i><i></i><i></i><span>Seg/Qua/Sex 14h–17h30 · Ter/Qui 14h–18h</span></div><img src="/apresentacao/horario.png" alt="Tela de horário"></div></div>
+  </section>
+
+  <section class="slide">
+    <div class="txt">
+      <div class="kicker"><i></i>08 · PESQUISAS E ALERTAS</div>
+      <h2>O que estão pesquisando, <em>com alerta.</em></h2>
+      <p class="lead">O painel junta o histórico do Chrome e do Edge de todas as máquinas. As pesquisas com palavras de alerta aparecem em vermelho e com aviso no menu.</p>
+      <ul class="pontos">
+        <li><span>Filtros por <b>máquina, período</b> (hoje, 7, 30 e 90 dias) e busca</span></li>
+        <li><span>Ranking dos <b>termos mais pesquisados</b></span></li>
+        <li><span>Lista de <b>palavras de alerta</b> editável pelo educador</span></li>
+      </ul>
+    </div>
+    <div class="midia"><span class="selo-ex">dados de exemplo</span><div class="janela"><div class="barra"><i></i><i></i><i></i><span>Pesquisas e sites</span></div><img src="/apresentacao/pesquisas.png" alt="Tela de pesquisas com dados de exemplo"></div></div>
+  </section>
+
+  <section class="slide">
+    <div class="txt">
+      <div class="kicker"><i></i>09 · IMAGENS DO CRJ</div>
+      <h2>A cara do CRJ <em>em cada tela.</em></h2>
+      <p class="lead">As fotos do CRJ passam como slides na tela de bloqueio e no papel de parede, com transição suave. Dá para recortar e enquadrar cada foto no próprio painel.</p>
+      <ul class="pontos">
+        <li><span>Arraste as fotos; o painel <b>ajusta o tamanho</b> para a tela</span></li>
+        <li><span>Troca a cada 5 segundos, 1 minuto, 1 hora… você escolhe</span></li>
+      </ul>
+    </div>
+    <div class="midia"><div class="janela"><div class="barra"><i></i><i></i><i></i><span>Imagens do CRJ</span></div><img src="/apresentacao/imagens.png" alt="Galeria de imagens do CRJ"></div></div>
+  </section>
+
+  <section class="slide">
+    <div class="txt">
+      <div class="kicker"><i></i>10 · MANUTENÇÃO</div>
+      <h2>Toda semana, <em>sem ninguém mexer.</em></h2>
+      <p class="lead">Com a sala fechada, cada máquina liga sozinha, limpa arquivos temporários, roda o antivírus, instala as atualizações do Windows e volta a hibernar.</p>
+      <ul class="pontos">
+        <li><span><b>Otimização</b> e energia em todas de uma vez</span></li>
+        <li><span>Lista de <b>programas instalados</b> e desinstalação em massa</span></li>
+        <li><span>Comandos do administrador em várias máquinas ao mesmo tempo</span></li>
+      </ul>
+    </div>
+    <div class="midia"><div class="janela"><div class="barra"><i></i><i></i><i></i><span>Manutenção em massa</span></div><img src="/apresentacao/manutencao.png" alt="Tela de manutenção"></div></div>
+  </section>
+
+  <section class="slide">
+    <div class="txt">
+      <div class="kicker"><i></i>11 · ASSISTENTE COM IA</div>
+      <h2>Pergunte em português. <em>Ele investiga.</em></h2>
+      <p class="lead">“Alguma máquina com problema?”, “diagnostica a Máquina 4”, “o que aconteceu hoje?”. O assistente consulta as máquinas de verdade e explica em linguagem simples. Usa a IA gratuita do Groq.</p>
+      <ul class="pontos">
+        <li><span>Diagnóstico completo: <b>disco, memória, rede, antivírus e atualizações</b></span></li>
+        <li><span>Para agir, ele só <b>propõe</b>; quem confirma e executa é o educador</span></li>
+        <li><span><b>Nunca</b> recebe o texto das pesquisas dos jovens</span></li>
+      </ul>
+    </div>
+    <div class="midia"><span class="selo-ex">conversa real · 23/11</span><div class="janela"><div class="barra"><i></i><i></i><i></i><span>Assistente</span></div><img src="/apresentacao/assistente.png" alt="Assistente com IA"></div></div>
+  </section>
+
+  <section class="slide">
+    <div class="txt">
+      <div class="kicker"><i></i>12 · ATIVIDADE</div>
+      <h2>Tudo registrado: <em>quem fez o quê.</em></h2>
+      <p class="lead">Cada ação aparece com a hora, as máquinas, o resultado e quem fez: o estúdio, alguém pela rede ou o próprio painel, sozinho.</p>
+      <ul class="pontos">
+        <li><span>Filtros por <b>dia, pessoa, automático e falhas</b></span></li>
+        <li><span>Clique para ver o resultado <b>máquina por máquina</b></span></li>
+      </ul>
+    </div>
+    <div class="midia"><div class="janela"><div class="barra"><i></i><i></i><i></i><span>Atividade</span></div><img src="/apresentacao/atividade.png" alt="Aba Atividade"></div></div>
+  </section>
+
+  <section class="slide">
+    <div class="txt">
+      <div class="kicker"><i></i>13 · AVISOS NO CELULAR</div>
+      <h2>O painel <em>avisa você.</em></h2>
+      <p class="lead">Notificação no celular pelo app ntfy, sem precisar abrir o painel. Já está ligado e testado.</p>
+      <ul class="pontos">
+        <li><span>Pesquisa com <b>palavra de alerta</b> (só máquina e quantidade)</span></li>
+        <li><span>Máquina que <b>sumiu da rede</b> no horário de aula</span></li>
+        <li><span>Falhas, manutenção com erro e <b>antivírus que achou ameaça</b></span></li>
+      </ul>
+    </div>
+    <div class="midia"><div class="janela"><div class="barra"><i></i><i></i><i></i><span>Avisos no celular</span></div><img src="/apresentacao/avisos.png" alt="Configuração dos avisos"></div></div>
+  </section>
+
+  <section class="slide">
+    <div class="txt">
+      <div class="kicker"><i></i>14 · SEMPRE EM DIA</div>
+      <h2>Máquina nova em minutos. <em>Atrasada se corrige sozinha.</em></h2>
+      <p class="lead">Para incluir uma máquina, basta digitar o IP: o painel confere, coloca na lista e deixa igual às outras. E se alguma ficar desatualizada (estava desligada num dia de mudança), ele percebe e corrige sozinho.</p>
+      <ul class="pontos">
+        <li><span>Fotos, bloqueio, horário e manutenção <b>sincronizados</b></span></li>
+        <li><span>Se o roteador trocar o IP de uma máquina, o painel <b>acha pela placa de rede</b></span></li>
+      </ul>
+    </div>
+    <div class="midia"><span class="selo-ex">máquina de exemplo</span><div class="janela"><div class="barra"><i></i><i></i><i></i><span>Adicionar máquina</span></div><img src="/apresentacao/adicionar.png" alt="Adicionar máquina"></div></div>
+  </section>
+
+  <section class="slide">
+    <div class="txt">
+      <div class="kicker"><i></i>15 · RÁPIDO DE USAR</div>
+      <h2>Aperte <em>Ctrl + K</em> e digite.</h2>
+      <p class="lead">A barra de comandos encontra qualquer página ou ação: “hibernar todas”, “bloquear tela”, “Máquina 3”… Setas para escolher, Enter para executar.</p>
+      <ul class="pontos">
+        <li><span>Menu lateral que recolhe com <kbd>[</kbd></span></li>
+        <li><span><kbd>Ctrl</kbd> <kbd>A</kbd> seleciona todas as máquinas e <kbd>Esc</kbd> limpa a seleção</span></li>
+      </ul>
+    </div>
+    <div class="midia"><div class="janela"><div class="barra"><i></i><i></i><i></i><span>Barra de comandos</span></div><img src="/apresentacao/paleta.png" alt="Barra de comandos Ctrl+K"></div></div>
+  </section>
+
+  <section class="slide">
+    <div class="txt">
+      <div class="kicker"><i></i>16 · DE QUALQUER LUGAR DA SALA</div>
+      <h2>Abre no notebook e no celular, <em>com senha.</em></h2>
+      <p class="lead">Qualquer computador da rede do CRJ abre o painel pelo navegador. Fora do estúdio, ele pede a senha de acesso.</p>
+      <ul class="pontos">
+        <li><span>No celular, o painel ganha <b>abas embaixo</b> e botões grandes para o dedo</span></li>
+        <li><span>O endereço aparece em <b>Acesso pela rede</b> (o PC do estúdio precisa estar ligado)</span></li>
+        <li><span>Só funciona <b>dentro da rede da sala</b>; de fora, é recusado</span></li>
+        <li><span>Depois de entrar, o acesso vale por 12 horas</span></li>
+      </ul>
+    </div>
+    <div class="midia"><div class="janela"><div class="barra"><i></i><i></i><i></i><span>Acesso pela rede</span></div><img src="/apresentacao/acesso.png" alt="Configuração do acesso pela rede"></div>
+      <div class="inset cel"><img src="/apresentacao/celular.png" alt="Painel no celular"></div></div>
+  </section>
+
+  <section class="slide so-texto">
+    <div class="txt">
+      <div class="kicker"><i></i>17 · SEGURANÇA E CUSTO</div>
+      <h2>Feito com o que já tínhamos. <em>Custo: zero.</em></h2>
+      <div class="numeros">
+        <div class="num"><b><em>R$</em> 0</b><span>sem licença, assinatura ou equipamento novo</span></div>
+        <div class="num"><b>9</b><span>máquinas controladas pela rede</span></div>
+        <div class="num"><b>0</b><span>pesquisas dos jovens enviadas para fora: o texto fica só no CRJ</span></div>
+        <div class="num"><b>100<em>%</em></b><span>das ações registradas no histórico</span></div>
+      </div>
+      <ul class="pontos" style="margin-top:30px">
+        <li><span>Usa recursos do próprio <b>Windows</b> e serviços gratuitos: Veyon (ver as telas), ntfy (avisos) e Groq (IA)</span></li>
+        <li><span>A senha de administrador fica <b>criptografada</b>; só o PC do estúdio consegue usar</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="slide so-texto">
+    <div class="txt">
+      <div class="kicker"><i></i>18 · PRÓXIMOS PASSOS</div>
+      <h2>O que falta para <em>a sala completa.</em></h2>
+      <div class="duas">
+        <div class="bloco"><h3><span class="bol" style="background:var(--amarelo)"></span>Pendências</h3>
+          <ul class="pontos">
+            <li><span><b>Máquina 9</b>: conserto do equipamento (depois, entra pelo “Adicionar máquina”)</span></li>
+            <li><span><b>Roteador</b>: reservar um IP fixo para cada PC (precisa da senha do roteador)</span></li>
+          </ul></div>
+        <div class="bloco bom"><h3><span class="bol"></span>Já funcionando</h3>
+          <ul class="pontos">
+            <li><span>Proteção, horário, imagens e alertas em <b>todas as máquinas ativas</b></span></li>
+            <li><span>Manutenção automática <b>todo sábado</b></span></li>
+            <li><span><b>Máquina 1</b> consertada e <b>Máquina 7</b> nova já no painel</span></li>
+            <li><span>Painel no <b>notebook</b> e no <b>celular</b>, com histórico de atividade</span></li>
+            <li><span><b>Assistente com IA</b> e <b>avisos no celular</b> ligados e testados</span></li>
+          </ul></div>
+      </div>
+      <p class="lead" style="margin-top:34px">Obrigado! Perguntas?</p>
+    </div>
+  </section>
+
+</div>
+<div class="rodape">
+  <span class="marca"><i></i>Painel da Informática · CRJ Flexal</span>
+  <div class="pontinhos" id="pontos"></div>
+  <span class="dica-f"><kbd>←</kbd><kbd>→</kbd> passar · <kbd>F</kbd> tela cheia</span>
+  <span class="cont" id="cont"></span>
+  <div class="setas"><button id="ant" title="Anterior"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button><button id="prox" title="Próximo"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button></div>
+</div>
+<script>
+const S = [...document.querySelectorAll(".slide")], P = document.getElementById("pontos");
+let i = Math.max(0, Math.min(S.length - 1, (parseInt(location.hash.slice(1)) || 1) - 1));
+S.forEach((_, k) => { const b = document.createElement("button"); b.title = "Slide " + (k + 1); b.onclick = () => ir(k); P.appendChild(b); });
+function ir(n) {
+  i = Math.max(0, Math.min(S.length - 1, n));
+  S.forEach((s, k) => { s.classList.toggle("ativo", k === i); s.style.transition = "opacity .5s cubic-bezier(.2,0,0,1)"; });
+  [...P.children].forEach((b, k) => b.classList.toggle("ativo", k === i));
+  document.getElementById("prog").style.width = ((i + 1) / S.length * 100) + "%";
+  document.getElementById("cont").textContent = String(i + 1).padStart(2, "0") + " / " + String(S.length).padStart(2, "0");
+  history.replaceState(null, "", "#" + (i + 1));
+}
+document.getElementById("ant").onclick = () => ir(i - 1);
+document.getElementById("prox").onclick = () => ir(i + 1);
+document.addEventListener("keydown", e => {
+  if (["ArrowRight", "PageDown", " ", "Enter"].includes(e.key)) { e.preventDefault(); ir(i + 1); }
+  else if (["ArrowLeft", "PageUp", "Backspace"].includes(e.key)) { e.preventDefault(); ir(i - 1); }
+  else if (e.key === "Home") ir(0); else if (e.key === "End") ir(S.length - 1);
+  else if (e.key.toLowerCase() === "f") { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen().catch(() => {}); }
+});
+document.getElementById("palco").addEventListener("click", e => { if (e.target.closest("button, a")) return; e.clientX > innerWidth * .3 ? ir(i + 1) : ir(i - 1); });
+let tx = null; addEventListener("touchstart", e => tx = e.touches[0].clientX, {passive: true});
+addEventListener("touchend", e => { if (tx === null) return; const d = e.changedTouches[0].clientX - tx; if (Math.abs(d) > 50) ir(i + (d < 0 ? 1 : -1)); tx = null; });
+ir(i);
+</script>
+</body>
+</html>
