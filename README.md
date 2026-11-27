@@ -152,6 +152,10 @@ flowchart LR
 - Sem reserva de IP no roteador, o IP das máquinas pode mudar. O painel se adapta, mas reservar os IPs no roteador é o ideal.
 - Feito e testado em uma sala com 9 máquinas Windows 11 Pro. Em outros ambientes pode precisar de ajustes.
 
+## Licença
+
+Este projeto usa a [licença MIT](LICENSE): você pode usar, copiar, modificar e distribuir, inclusive em outras instituições, desde que mantenha o aviso de direitos autorais. O software é oferecido "como está", sem garantia.
+
 ---
 
 Feito por **Gillead**, educador do CRJ Flexal, com a ajuda do Claude (Anthropic).
